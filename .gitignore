@@ -1,1 +1,26 @@
-tareas
+# Tareas y ejemplos
+tareas/
+
+# Build artifacts
+target/
+temp/
+*.class
+*.jar
+*.war
+
+# IDE
+.settings/
+.classpath
+.project
+.vscode/
+
+# Backups
+*_backup.*
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
