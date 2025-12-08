@@ -1,0 +1,25 @@
+<?xml version = "1.0" encoding = "ISO-8859-1"?>
+
+<!DOCTYPE controladores SYSTEM "dtds/controladores.dtd">
+
+<controladores>
+    
+    <!-- Controlador para Matricula con accion de generar boleta Excel -->
+    <controlador nombre="MatriculaController">
+        <hereda-de controlador="Typical"/>
+        <accion nombre="generarBoleta" 
+                etiqueta="Generar Boleta Excel"
+                clase="com.studio.stud_io2.actions.GenerarBoletaExcelAction"
+                icono="document"/>
+    </controlador>
+    
+    <!-- Controlador para Asignacion con accion de generar lista de clase -->
+    <controlador nombre="AsignacionController">
+        <hereda-de controlador="Typical"/>
+        <accion nombre="generarLista" 
+                etiqueta="Generar Lista Excel"
+                clase="com.studio.stud_io2.actions.GenerarListaClaseExcelAction"
+                icono="list"/>
+    </controlador>
+    
+</controladores>

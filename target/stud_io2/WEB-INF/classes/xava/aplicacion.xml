@@ -1,0 +1,15 @@
+<?xml version = "1.0" encoding = "ISO-8859-1"?>
+
+<!DOCTYPE aplicacion SYSTEM "dtds/aplicacion.dtd">
+
+<aplicacion nombre="stud_io2">
+
+	<!--
+	Un módulo por defecto se asume para cada
+	componente con el controlador Typical
+	-->
+	<modulo-defecto>
+		<controlador nombre="Typical"/>
+	</modulo-defecto>
+
+</aplicacion>

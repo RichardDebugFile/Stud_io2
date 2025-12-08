@@ -1,0 +1,35 @@
+<?xml version = "1.0" encoding = "ISO-8859-1"?>
+
+<!DOCTYPE controladores SYSTEM "dtds/controladores.dtd">
+
+<!-- 
+Documentación sobre controladores: 
+https://www.openxava.org/OpenXavaDoc/docs/controllers_es.html
+
+Controladores por defecto, incluidos en OpenXava (puedes extender de ellos):
+https://github.com/openxava/openxava/blob/master/openxava/src/main/resources/xava/default-controllers.xml
+ 
+Ejemplos de controladores (de la aplicación de pruebas):
+https://github.com/openxava/openxava/blob/master/openxavatest/src/main/resources/xava/controllers.xml
+-->
+
+<controladores>
+    
+    <!-- Variable de entorno: 
+    <var-entorno nombre="stud_io2_ANYO_DEFECTO" valor="2015"/>
+    -->
+    
+    <!-- Objeto de sesión:
+    <Objeto nombre="stud_io2_anyoActivo" clase="java.lang.Integer" valor="2015" 
+            ambito="global"/>
+    -->
+    
+    <!-- Controlador:
+    <controlador nombre="Profesor">
+        <hereda-de controlador="Typical"/>
+        <accion nombre="new" icono="plus-box-multiple" atajo-de-teclado="Control N" 
+                clase="acciones.CrearProfesor"/>        
+    </controlador>
+    -->
+    
+</controladores>

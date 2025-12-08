@@ -1,0 +1,23 @@
+services:
+  mysql-stdio:
+    image: mysql:8.0
+    platform: linux/amd64
+    container_name: stdio-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: stud_io2
+      MYSQL_USER: stdio_user
+      MYSQL_PASSWORD: stdio_pass123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
