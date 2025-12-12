@@ -1,13 +1,15 @@
 package com.studio.stud_io2.modelo;
 
 import javax.persistence.*;
+
 import org.openxava.annotations.*;
 import org.openxava.calculators.*;
+
 import lombok.*;
 
 /**
  * Entidad Asistencia - Representa el registro de asistencia de un estudiante
- * RF-09: Prevención de registros duplicados para la misma fecha
+ * RF-09: Prevencion de registros duplicados para la misma fecha
  */
 @Entity
 @Getter
@@ -40,9 +42,9 @@ public class Asistencia {
     private String observaciones;
 
     /**
-     * Calcula el porcentaje de asistencia para una matrícula
+     * Calcula el porcentaje de asistencia para una matricula
      * 
-     * @param matriculaId ID de la matrícula
+     * @param matriculaId ID de la matricula
      * @return Porcentaje de asistencia (0-100)
      */
     public static double calcularPorcentajeAsistencia(Long matriculaId) {

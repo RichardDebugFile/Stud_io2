@@ -1,16 +1,18 @@
 package com.studio.stud_io2.modelo;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import org.openxava.annotations.*;
-import lombok.*;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.*;
 
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
+import org.openxava.annotations.*;
+
+import lombok.*;
+
 /**
- * Entidad Asignacion - Representa una sección de curso asignada a un docente en
- * un periodo
- * RF-05: Validación de conflictos de horario docente (solapes)
+ * Entidad Asignacion - Representa una seccion de curso asignada a un docente en un periodo
+ * RF-05: Validacion de conflictos de horario docente (solapes)
  */
 @Entity
 @Getter

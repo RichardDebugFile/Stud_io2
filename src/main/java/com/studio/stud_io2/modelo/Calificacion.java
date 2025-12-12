@@ -1,18 +1,19 @@
 package com.studio.stud_io2.modelo;
 
+import java.math.*;
+import java.util.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
+
 import org.openxava.annotations.*;
 import org.openxava.calculators.*;
+
 import lombok.*;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
 
 /**
- * Entidad Calificacion - Representa la nota de un estudiante en un rubro
- * específico
- * RF-08: Registro de notas con cálculo automático de promedio y estado final
+ * Entidad Calificacion - Representa la nota de un estudiante en un rubro especifico
+ * RF-08: Registro de notas con calculo automatico de promedio y estado final
  */
 @Entity
 @EntityListeners(com.studio.stud_io2.listeners.AuditListener.class)
@@ -47,7 +48,7 @@ public class Calificacion {
     private java.time.LocalDate fecha;
 
     /**
-     * Validación: La matrícula y el rubro deben pertenecer a la misma asignación
+     * Validacion: La matricula y el rubro deben pertenecer a la misma asignacion
      */
     @PrePersist
     @PreUpdate
@@ -63,9 +64,9 @@ public class Calificacion {
     }
 
     /**
-     * Calcula el promedio ponderado para una matrícula (RF-08)
+     * Calcula el promedio ponderado para una matricula (RF-08)
      * 
-     * @param matriculaId ID de la matrícula
+     * @param matriculaId ID de la matricula
      * @return Promedio ponderado
      */
     public static BigDecimal calcularPromedioPonderado(Long matriculaId) {

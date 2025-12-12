@@ -1,13 +1,15 @@
 package com.studio.stud_io2.modelo;
 
 import javax.persistence.*;
+
 import org.openxava.annotations.*;
 import org.openxava.calculators.*;
+
 import lombok.*;
 
 /**
- * Entidad Matricula - Representa la inscripción de un estudiante en una sección
- * RF-06: Validación de cupos disponibles y prevención de duplicados
+ * Entidad Matricula - Representa la inscripcion de un estudiante en una seccion
+ * RF-06: Validacion de cupos disponibles y prevencion de duplicados
  */
 @Entity
 @Getter

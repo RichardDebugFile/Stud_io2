@@ -1,15 +1,18 @@
 package com.studio.stud_io2.modelo;
 
+import java.math.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
+
 import org.openxava.annotations.*;
+
 import lombok.*;
-import java.math.BigDecimal;
 
 /**
- * Entidad Rubro - Representa un componente de evaluación (examen, deberes,
+ * Entidad Rubro - Representa un componente de evaluacion (examen, deberes,
  * proyecto, etc.)
- * RF-07: La suma de ponderaciones de todos los rubros de una asignación debe
+ * RF-07: La suma de ponderaciones de todos los rubros de una asignacion debe
  * ser exactamente 100%
  */
 @Entity
@@ -35,8 +38,8 @@ public class Rubro {
 
     @Column(precision = 5, scale = 2, nullable = false)
     @Required
-    @DecimalMin(value = "0.01", message = "La ponderación debe ser mayor que 0")
-    @DecimalMax(value = "100.00", message = "La ponderación no puede exceder 100")
+    @DecimalMin(value = "0.01", message = "La ponderacion debe ser mayor que 0")
+    @DecimalMax(value = "100.00", message = "La ponderacion no puede exceder 100")
     private BigDecimal ponderacion; // Valor entre 0.01 y 100.00
 
     @Column(length = 200)
