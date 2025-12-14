@@ -25,3 +25,13 @@ Thumbs.db
 # Logs
 *.log
 .claude/settings.local.json
+
+# Node.js
+node_modules/
+package-lock.json
+
+# Python virtual environments
+venv/
+.venv/
+env/
+.env/
