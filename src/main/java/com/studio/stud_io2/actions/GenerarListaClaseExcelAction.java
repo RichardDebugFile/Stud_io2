@@ -14,6 +14,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openxava.actions.ViewBaseAction;
 import org.openxava.jpa.XPersistence;
 
+/**
+ * Acción para generar lista de clase en formato Excel.
+ * 
+ * RF-10: Generación de reportes (Lista de Clase en Excel)
+ * Requisito: El sistema debe permitir la generación de reportes académicos.
+ * Cumplimiento: Genera lista de estudiantes matriculados por sección.
+ */
 public class GenerarListaClaseExcelAction extends ViewBaseAction {
 
     public void execute() throws Exception {

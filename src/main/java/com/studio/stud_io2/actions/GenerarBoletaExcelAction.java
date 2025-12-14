@@ -15,6 +15,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openxava.actions.ViewBaseAction;
 import org.openxava.jpa.XPersistence;
 
+/**
+ * Acción para generar boleta de calificaciones en formato Excel.
+ * 
+ * RF-10: Generación de reportes (Boleta de Calificaciones en Excel)
+ * Requisito: El sistema debe permitir la generación de reportes académicos.
+ * Cumplimiento: Genera boleta con promedio ponderado y estado final.
+ */
 public class GenerarBoletaExcelAction extends ViewBaseAction {
 
     public void execute() throws Exception {
