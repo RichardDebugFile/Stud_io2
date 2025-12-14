@@ -11,7 +11,8 @@ import org.openxava.annotations.*;
 import lombok.*;
 
 /**
- * Entidad Asignacion - Representa una seccion de curso asignada a un docente en un periodo
+ * Entidad Asignacion - Representa una seccion de curso asignada a un docente en
+ * un periodo
  * RF-05: Validacion de conflictos de horario docente (solapes)
  */
 @Entity
@@ -77,6 +78,23 @@ public class Asignacion {
             return true; // Opcional
         }
         return horarioInicio.isBefore(horarioFin);
+    }
+
+    /**
+     * Before persist: Validar que el periodo este activo (CU-06)
+     * Solo se pueden crear asignaciones en periodos activos
+     */
+    @PrePersist
+    private void validarPeriodoActivo() {
+        if (periodo == null) {
+            return; // La validación @Required se encargará
+        }
+
+        if (!periodo.isActivo()) {
+            throw new javax.validation.ValidationException(
+                    "El periodo académico no permite nuevas asignaciones. " +
+                            "Solo se pueden crear asignaciones en periodos activos.");
+        }
     }
 
     /**

@@ -12,7 +12,8 @@ import org.openxava.calculators.*;
 import lombok.*;
 
 /**
- * Entidad Calificacion - Representa la nota de un estudiante en un rubro especifico
+ * Entidad Calificacion - Representa la nota de un estudiante en un rubro
+ * especifico
  * RF-08: Registro de notas con calculo automatico de promedio y estado final
  */
 @Entity
@@ -60,6 +61,28 @@ public class Calificacion {
         if (!matricula.getAsignacion().getId().equals(rubro.getAsignacion().getId())) {
             throw new javax.validation.ValidationException(
                     "Error: El rubro no pertenece a la asignación de la matrícula seleccionada");
+        }
+    }
+
+    /**
+     * Before persist: Validar que los rubros de la asignacion sumen 100% (CU-08)
+     * No se pueden registrar calificaciones si la configuracion de rubros esta
+     * incompleta
+     */
+    @PrePersist
+    private void validarPonderacionCompleta() {
+        if (matricula == null || rubro == null) {
+            return;
+        }
+
+        boolean completo = Rubro.asignacionTienePonderacionCompleta(
+                matricula.getAsignacion().getId());
+
+        if (!completo) {
+            throw new javax.validation.ValidationException(
+                    "No se puede registrar la calificación. " +
+                            "Las ponderaciones de los rubros de esta asignación no suman 100%. " +
+                            "Debe completar la configuración de evaluaciones primero.");
         }
     }
 

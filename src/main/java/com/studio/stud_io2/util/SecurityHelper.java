@@ -113,12 +113,18 @@ public class SecurityHelper {
      * @return Email del docente (ej: roberto.silva@profesores.edu.ec)
      */
     public static String getEmailDocenteFromUsername(String username) {
-        if (username == null || !username.startsWith("docente_")) {
+        if (username == null) {
+            return null;
+        }
+
+        String user = username.toLowerCase();
+
+        if (!user.startsWith("docente_")) {
             return null;
         }
 
         // Casos hardcoded para usuarios de prueba
-        switch (username.toLowerCase()) {
+        switch (user) {
             case "docente_silva":
                 return "roberto.silva@profesores.edu.ec";
             case "docente_vasquez":
@@ -131,7 +137,7 @@ public class SecurityHelper {
                 return "andres.mendoza@profesores.edu.ec";
             default:
                 // Generar email basado en convención
-                String nombre = username.substring(8); // Quitar "docente_"
+                String nombre = user.substring(8); // Quitar "docente_"
                 return nombre + "@profesores.edu.ec";
         }
     }
