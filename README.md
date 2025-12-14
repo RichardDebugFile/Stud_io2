@@ -465,8 +465,6 @@ stud_io2/
 │   └── sql/
 │       ├── test_data.sql        # Datos de prueba
 │       └── naviox_roles_config.sql
-├── tareas/
-│   └── docs/                    # Documentación
 ├── docker-compose.yml
 ├── pom.xml
 └── README.md
