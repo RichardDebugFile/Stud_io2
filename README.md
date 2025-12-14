@@ -305,19 +305,6 @@ Todas las operaciones **CREATE**, **UPDATE**, **DELETE** en entidades críticas 
 
 ---
 
-## 📚 Documentación
-
-### Documentos Disponibles
-
-| Documento | Ubicación | Descripción |
-|-----------|-----------|-------------|
-| **EVALUACION_FINAL.md** | `tareas/docs/` | Estado completo del proyecto (100/100) |
-| **ANALISIS_CUMPLIMIENTO_REQUISITOS.md** | `tareas/docs/` | Verificación de 10 casos de uso |
-| **GUIA_ROLES_HARDCODED.md** | `tareas/docs/` | Sistema de roles y permisos |
-| **GUIA_REPORTES_EXCEL.md** | `tareas/docs/` | Cómo usar los reportes |
-| **test_data.sql** | `data/sql/` | Script de datos de prueba |
-
----
 
 ## 🛠️ Tecnologías
 
