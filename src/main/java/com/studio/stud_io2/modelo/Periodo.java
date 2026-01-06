@@ -80,5 +80,22 @@ public class Periodo {
                         "Ya existe un periodo activo. Solo puede haber un periodo activo a la vez.");
             }
         }
+
+        // Validación de permisos (CU-03): Solo académicos y administradores
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para gestionar períodos académicos. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+    }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden eliminar períodos (CU-03)
+     */
+    @PreRemove
+    private void validarPermisoEliminar() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para eliminar períodos. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
     }
 }

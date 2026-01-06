@@ -63,4 +63,38 @@ public class Estudiante {
     public String getNombreCompleto() {
         return nombre + " " + apellido;
     }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden crear estudiantes (CU-01)
+     * RNF-05: Control de acceso basado en roles
+     */
+    @PrePersist
+    private void validarPermisoCrear() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para crear estudiantes. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+    }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden modificar estudiantes (CU-01)
+     */
+    @PreUpdate
+    private void validarPermisoModificar() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para modificar estudiantes. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+    }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden eliminar estudiantes (CU-01)
+     */
+    @PreRemove
+    private void validarPermisoEliminar() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para eliminar estudiantes. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+    }
 }

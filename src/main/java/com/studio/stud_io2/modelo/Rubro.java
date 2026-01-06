@@ -106,4 +106,16 @@ public class Rubro {
 
         return suma.compareTo(new BigDecimal("100.00")) == 0;
     }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden eliminar rubros (CU-07)
+     * Los docentes pueden crear y modificar, pero no eliminar
+     */
+    @PreRemove
+    private void validarPermisoEliminar() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para eliminar rubros. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+    }
 }

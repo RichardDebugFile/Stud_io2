@@ -49,32 +49,24 @@ public class Calificacion {
     private java.time.LocalDate fecha;
 
     /**
-     * Validacion: La matricula y el rubro deben pertenecer a la misma asignacion
+     * Validaciones antes de persistir o actualizar:
+     * 1. La matricula y el rubro deben pertenecer a la misma asignacion
+     * 2. Los rubros de la asignacion deben sumar 100% antes de registrar calificaciones
      */
     @PrePersist
     @PreUpdate
-    private void validarCoherenciaMatriculaRubro() {
+    private void validarCalificacion() {
         if (matricula == null || rubro == null) {
             return;
         }
 
+        // Validacion 1: Coherencia matricula-rubro
         if (!matricula.getAsignacion().getId().equals(rubro.getAsignacion().getId())) {
             throw new javax.validation.ValidationException(
                     "Error: El rubro no pertenece a la asignación de la matrícula seleccionada");
         }
-    }
 
-    /**
-     * Before persist: Validar que los rubros de la asignacion sumen 100% (CU-08)
-     * No se pueden registrar calificaciones si la configuracion de rubros esta
-     * incompleta
-     */
-    @PrePersist
-    private void validarPonderacionCompleta() {
-        if (matricula == null || rubro == null) {
-            return;
-        }
-
+        // Validacion 2: Ponderacion completa (solo en @PrePersist)
         boolean completo = Rubro.asignacionTienePonderacionCompleta(
                 matricula.getAsignacion().getId());
 
@@ -141,5 +133,17 @@ public class Calificacion {
     public static String determinarEstadoFinal(BigDecimal promedio) {
         BigDecimal notaMinima = new BigDecimal("70.00");
         return promedio.compareTo(notaMinima) >= 0 ? "APROBADO" : "REPROBADO";
+    }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden eliminar calificaciones (CU-08)
+     * Los docentes pueden crear y modificar, pero no eliminar
+     */
+    @PreRemove
+    private void validarPermisoEliminar() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para eliminar calificaciones. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
     }
 }

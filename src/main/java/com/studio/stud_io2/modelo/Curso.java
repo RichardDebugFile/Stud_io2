@@ -46,4 +46,37 @@ public class Curso {
     @Column(length = 500)
     @Stereotype("MEMO")
     private String descripcion;
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden crear cursos (CU-04)
+     */
+    @PrePersist
+    private void validarPermisoCrear() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para crear cursos. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+    }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden modificar cursos (CU-04)
+     */
+    @PreUpdate
+    private void validarPermisoModificar() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para modificar cursos. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+    }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden eliminar cursos (CU-04)
+     */
+    @PreRemove
+    private void validarPermisoEliminar() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para eliminar cursos. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+    }
 }

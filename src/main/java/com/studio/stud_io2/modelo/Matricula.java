@@ -41,10 +41,16 @@ public class Matricula {
     private String estado = "ACTIVA"; // ACTIVA, CANCELADA, RETIRADA
 
     /**
-     * Before persist: Validar cupos disponibles (RF-06)
+     * Before persist: Validar cupos disponibles y permisos (RF-06)
      */
     @PrePersist
-    private void validarCuposDisponibles() {
+    private void validarCuposYPermisos() {
+        // Validación de permisos: Solo académicos y administradores pueden crear matrículas
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para crear matrículas. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+
         if (asignacion == null) {
             return; // La validación @Required se encargará
         }
@@ -68,6 +74,28 @@ public class Matricula {
                             asignacion.getCurso().getNombre(),
                             asignacion.getCupoMaximo(),
                             count));
+        }
+    }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden modificar matrículas
+     */
+    @PreUpdate
+    private void validarPermisoModificar() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para modificar matrículas. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+    }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden eliminar matrículas
+     */
+    @PreRemove
+    private void validarPermisoEliminar() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para eliminar matrículas. Solo Académicos y Administradores pueden realizar esta operación.");
         }
     }
 }

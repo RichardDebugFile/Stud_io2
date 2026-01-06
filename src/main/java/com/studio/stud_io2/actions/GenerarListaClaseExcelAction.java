@@ -1,25 +1,19 @@
 package com.studio.stud_io2.actions;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.openxava.actions.ViewBaseAction;
-import org.openxava.jpa.XPersistence;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.*;
+import org.openxava.actions.*;
+import org.openxava.jpa.*;
 
 /**
- * Acci贸n para generar lista de clase en formato Excel.
+ * Acci髇 para generar lista de clase en formato Excel.
  * 
- * RF-10: Generaci贸n de reportes (Lista de Clase en Excel)
- * Requisito: El sistema debe permitir la generaci贸n de reportes acad茅micos.
- * Cumplimiento: Genera lista de estudiantes matriculados por secci贸n.
+ * RF-10: Generaci髇 de reportes (Lista de Clase en Excel)
+ * Requisito: El sistema debe permitir la generaci髇 de reportes acad茅micos.
+ * Cumplimiento: Genera lista de estudiantes matriculados por secci髇.
  */
 public class GenerarListaClaseExcelAction extends ViewBaseAction {
 

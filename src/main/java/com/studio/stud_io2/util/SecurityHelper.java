@@ -1,18 +1,18 @@
 package com.studio.stud_io2.util;
 
-import org.openxava.util.Users;
+import org.openxava.util.*;
 
 /**
- * Helper de Seguridad - GestiÃ³n de roles sin XavaPro
+ * Helper de Seguridad - Gestión de roles sin XavaPro
  * 
  * Implementa un sistema de roles basado en convenciones de nombres de usuario
- * ya que OpenXava gratuito no incluye gestiÃ³n de roles desde interfaz.
+ * ya que OpenXava gratuito no incluye gestión de roles desde interfaz.
  * 
  * CONVENCIONES:
- * - admin* â†’ ADMINISTRADOR
- * - academico_* â†’ ACADEMICO
- * - docente_* â†’ DOCENTE
- * - Otros â†’ USUARIO (sin permisos especiales)
+ * - admin* =†’ ADMINISTRADOR
+ * - academico_* =†’ ACADEMICO
+ * - docente_* = DOCENTE
+ * - Otros =’ USUARIO (sin permisos especiales)
  */
 public class SecurityHelper {
 
@@ -41,35 +41,40 @@ public class SecurityHelper {
     }
 
     /**
-     * Determina el rol basÃ¡ndose en el nombre de usuario
+     * Determina el rol basándose en el nombre de usuario
      * 
      * @param username Nombre de usuario
      * @return Rol correspondiente
      */
+    
     public static Rol getRol(String username) {
+    	// Decisión D1
         if (username == null || username.trim().isEmpty()) {
-            return Rol.USUARIO;
+            return Rol.USUARIO; // Salida E1
         }
 
         String user = username.toLowerCase().trim();
 
         // ADMINISTRADORES: admin o admin_*
+        // Decisión D2
         if (user.equals("admin") || user.startsWith("admin_")) {
-            return Rol.ADMINISTRADOR;
+            return Rol.ADMINISTRADOR; // Salida E2
         }
 
-        // ACADÃ‰MICOS: academico_*
+        // ACADÉMICOS: academico_*
+        //Decisión D3
         if (user.startsWith("academico_")) {
-            return Rol.ACADEMICO;
+            return Rol.ACADEMICO; // Salida E3
         }
 
         // DOCENTES: docente_*
+        // Decisión D4
         if (user.startsWith("docente_")) {
-            return Rol.DOCENTE;
+            return Rol.DOCENTE; // Salida E4
         }
 
         // Por defecto: usuario sin rol especÃ­fico
-        return Rol.USUARIO;
+        return Rol.USUARIO; // Salida E5
     }
 
     /**
@@ -80,7 +85,7 @@ public class SecurityHelper {
     }
 
     /**
-     * Verifica si el usuario actual es acadÃ©mico o administrador
+     * Verifica si el usuario actual es académico o administrador
      */
     public static boolean esAcademicoOSuperior() {
         Rol rol = getRolActual();
@@ -106,8 +111,8 @@ public class SecurityHelper {
     }
 
     /**
-     * Obtiene el email del docente basÃ¡ndose en el username
-     * ConvenciÃ³n: docente_nombre â†’ nombre@profesores.edu.ec
+     * Obtiene el email del docente basándose en el username
+     * Convención: docente_nombre =†’ nombre@profesores.edu.ec
      * 
      * @param username Nombre de usuario (ej: docente_silva)
      * @return Email del docente (ej: roberto.silva@profesores.edu.ec)
@@ -136,14 +141,14 @@ public class SecurityHelper {
             case "docente_mendoza":
                 return "andres.mendoza@profesores.edu.ec";
             default:
-                // Generar email basado en convenciÃ³n
+                // Generar email basado en convención
                 String nombre = user.substring(8); // Quitar "docente_"
                 return nombre + "@profesores.edu.ec";
         }
     }
 
     /**
-     * Valida si el usuario actual tiene permiso para operaciÃ³n especÃ­fica
+     * Valida si el usuario actual tiene permiso para operación específica
      * 
      * @param operacion Tipo de operaciÃ³n (CREATE, READ, UPDATE, DELETE)
      * @param modulo    Nombre del mÃ³dulo

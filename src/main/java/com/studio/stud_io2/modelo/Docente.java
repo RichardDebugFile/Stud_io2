@@ -66,7 +66,19 @@ public class Docente {
     }
 
     /**
-     * Validación de permisos: Solo administradores pueden modificar docentes
+     * Validación de permisos: Solo académicos y administradores pueden crear docentes (CU-02)
+     * RNF-05: Control de acceso basado en roles
+     */
+    @PrePersist
+    private void validarPermisoCrear() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para crear docentes. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+    }
+
+    /**
+     * Validación de permisos: Solo administradores pueden modificar docentes (CU-05)
      * Cumple RNF-05: Académicos pueden crear pero no modificar
      */
     @PreUpdate

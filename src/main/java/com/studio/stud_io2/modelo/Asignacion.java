@@ -81,30 +81,28 @@ public class Asignacion {
     }
 
     /**
-     * Before persist: Validar que el periodo este activo (CU-06)
-     * Solo se pueden crear asignaciones en periodos activos
+     * Validaciones antes de persistir o actualizar:
+     * 0. Solo académicos y administradores pueden crear/modificar (CU-06)
+     * 1. El periodo debe estar activo (solo en @PrePersist)
+     * 2. No debe haber conflictos de horario con otras asignaciones del docente (RF-05)
      */
     @PrePersist
-    private void validarPeriodoActivo() {
-        if (periodo == null) {
-            return; // La validación @Required se encargará
+    @PreUpdate
+    private void validarAsignacion() {
+        // Validacion 0: Permisos (CU-06)
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para gestionar asignaciones. Solo Académicos y Administradores pueden realizar esta operación.");
         }
 
-        if (!periodo.isActivo()) {
+        // Validacion 1: Periodo activo (solo al crear)
+        if (periodo != null && !periodo.isActivo()) {
             throw new javax.validation.ValidationException(
                     "El periodo académico no permite nuevas asignaciones. " +
                             "Solo se pueden crear asignaciones en periodos activos.");
         }
-    }
 
-    /**
-     * Before persist/update: Validar conflictos de horario (RF-05)
-     * Un docente no puede tener dos asignaciones con horarios superpuestos en el
-     * mismo periodo
-     */
-    @PrePersist
-    @PreUpdate
-    private void validarConflictosHorario() {
+        // Validacion 2: Conflictos de horario
         if (docente == null || periodo == null || horarioInicio == null || horarioFin == null) {
             return; // Las validaciones @Required se encargarán
         }
@@ -190,5 +188,16 @@ public class Asignacion {
     @Transient
     public boolean hayCuposDisponibles() {
         return getMatriculasActivas() < cupoMaximo;
+    }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden eliminar asignaciones (CU-06)
+     */
+    @PreRemove
+    private void validarPermisoEliminar() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para eliminar asignaciones. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
     }
 }

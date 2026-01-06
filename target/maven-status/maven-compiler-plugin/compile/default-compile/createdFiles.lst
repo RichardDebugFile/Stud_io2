@@ -14,5 +14,6 @@ com\studio\stud_io2\util\SecurityHelper.class
 com\studio\stud_io2\actions\GenerarBoletaExcelAction.class
 com\studio\stud_io2\modelo\Asignacion.class
 com\studio\stud_io2\run\stud_io2.class
+com\studio\stud_io2\util\SecurityHelperDemo.class
 com\studio\stud_io2\modelo\Estudiante.class
 com\studio\stud_io2\modelo\Asistencia.class

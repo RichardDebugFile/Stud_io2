@@ -70,4 +70,16 @@ public class Asistencia {
 
         return (presentes.doubleValue() / total.doubleValue()) * 100.0;
     }
+
+    /**
+     * Validación de permisos: Solo académicos y administradores pueden eliminar registros de asistencia (CU-09)
+     * Los docentes pueden crear y modificar, pero no eliminar
+     */
+    @PreRemove
+    private void validarPermisoEliminar() {
+        if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
+            throw new javax.validation.ValidationException(
+                    "No tiene permisos para eliminar registros de asistencia. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+    }
 }
