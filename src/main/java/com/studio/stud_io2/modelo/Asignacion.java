@@ -109,24 +109,34 @@ public class Asignacion {
 
         EntityManager em = org.openxava.jpa.XPersistence.getManager();
 
-        // Buscar otras asignaciones del mismo docente en el mismo periodo
-        String jpql = "SELECT a FROM Asignacion a WHERE a.docente.id = :docenteId " +
-                "AND a.periodo.id = :periodoId " +
-                "AND a.horarioInicio IS NOT NULL AND a.horarioFin IS NOT NULL";
+        // Deshabilitar auto-flush temporalmente para evitar recursión infinita
+        javax.persistence.FlushModeType flushModeOriginal = em.getFlushMode();
+        em.setFlushMode(javax.persistence.FlushModeType.COMMIT);
 
-        if (this.id != null) {
-            jpql += " AND a.id != :currentId";
+        List<Asignacion> otrasAsignaciones;
+        try {
+            // Buscar otras asignaciones del mismo docente en el mismo periodo
+            String jpql = "SELECT a FROM Asignacion a WHERE a.docente.id = :docenteId " +
+                    "AND a.periodo.id = :periodoId " +
+                    "AND a.horarioInicio IS NOT NULL AND a.horarioFin IS NOT NULL";
+
+            if (this.id != null) {
+                jpql += " AND a.id != :currentId";
+            }
+
+            javax.persistence.TypedQuery<Asignacion> query = em.createQuery(jpql, Asignacion.class)
+                    .setParameter("docenteId", docente.getId())
+                    .setParameter("periodoId", periodo.getId());
+
+            if (this.id != null) {
+                query.setParameter("currentId", this.id);
+            }
+
+            otrasAsignaciones = query.getResultList();
+        } finally {
+            // Restaurar el flush mode original
+            em.setFlushMode(flushModeOriginal);
         }
-
-        javax.persistence.TypedQuery<Asignacion> query = em.createQuery(jpql, Asignacion.class)
-                .setParameter("docenteId", docente.getId())
-                .setParameter("periodoId", periodo.getId());
-
-        if (this.id != null) {
-            query.setParameter("currentId", this.id);
-        }
-
-        List<Asignacion> otrasAsignaciones = query.getResultList();
 
         // Verificar superposición de horarios en los mismos días
         for (Asignacion otra : otrasAsignaciones) {
@@ -157,10 +167,12 @@ public class Asignacion {
 
     /**
      * Verifica si dos conjuntos de días tienen al menos un día en común
+     * Si alguno no especifica días, asume que potencialmente se superponen
      */
     private boolean haySuposicionDias(String dias1, String dias2) {
-        if (dias1 == null || dias2 == null || dias1.isEmpty() || dias2.isEmpty()) {
-            return false;
+        // Si alguno no tiene días especificados, asumir superposición potencial
+        if (dias1 == null || dias1.isEmpty() || dias2 == null || dias2.isEmpty()) {
+            return true;
         }
 
         Set<String> set1 = new HashSet<>(Arrays.asList(dias1.split(",")));

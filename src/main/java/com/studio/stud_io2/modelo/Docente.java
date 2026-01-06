@@ -47,7 +47,7 @@ public class Docente {
     @Email(message = "Formato de email inválido")
     private String email;
 
-    @Column(length = 15)
+    @Column(length = 15, unique = true)
     @Pattern(regexp = "\\d{7,15}", message = "El teléfono debe contener entre 7 y 15 dígitos")
     private String telefono;
 

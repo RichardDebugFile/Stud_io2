@@ -30,6 +30,7 @@ public class Rubro {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @Required
+    @DescriptionsList(descriptionProperties = "curso.codigo, seccion, periodo.nombre")
     private Asignacion asignacion;
 
     @Column(length = 50, nullable = false)
@@ -60,33 +61,69 @@ public class Rubro {
 
         EntityManager em = org.openxava.jpa.XPersistence.getManager();
 
-        // Calcular la suma de ponderaciones de otros rubros (excluyendo el actual si ya
-        // existe)
-        String jpql = "SELECT COALESCE(SUM(r.ponderacion), 0) FROM Rubro r " +
-                "WHERE r.asignacion.id = :asignacionId";
+        // Deshabilitar auto-flush temporalmente para evitar recursión infinita
+        javax.persistence.FlushModeType flushModeOriginal = em.getFlushMode();
+        em.setFlushMode(javax.persistence.FlushModeType.COMMIT);
 
-        if (this.id != null) {
-            jpql += " AND r.id != :currentId";
-        }
+        try {
+            // Validación 1: Nombre duplicado en la misma asignación (CU-07-TC-05)
+            if (nombre != null && !nombre.trim().isEmpty()) {
+                String jpqlNombre = "SELECT COUNT(r) FROM Rubro r " +
+                        "WHERE r.asignacion.id = :asignacionId " +
+                        "AND LOWER(r.nombre) = LOWER(:nombre)";
 
-        javax.persistence.Query query = em.createQuery(jpql)
-                .setParameter("asignacionId", asignacion.getId());
+                if (this.id != null) {
+                    jpqlNombre += " AND r.id != :currentId";
+                }
 
-        if (this.id != null) {
-            query.setParameter("currentId", this.id);
-        }
+                javax.persistence.Query queryNombre = em.createQuery(jpqlNombre)
+                        .setParameter("asignacionId", asignacion.getId())
+                        .setParameter("nombre", nombre.trim());
 
-        BigDecimal sumaOtros = (BigDecimal) query.getSingleResult();
-        BigDecimal sumaTotal = sumaOtros.add(this.ponderacion);
+                if (this.id != null) {
+                    queryNombre.setParameter("currentId", this.id);
+                }
 
-        // Verificar que la suma sea exactamente 100
-        if (sumaTotal.compareTo(new BigDecimal("100.00")) > 0) {
-            throw new javax.validation.ValidationException(
-                    String.format("Error: La suma de ponderaciones excede el 100%%. " +
-                            "Suma actual de otros rubros: %.2f%%, " +
-                            "Esta ponderación: %.2f%%, " +
-                            "Total: %.2f%%",
-                            sumaOtros, this.ponderacion, sumaTotal));
+                Long count = (Long) queryNombre.getSingleResult();
+
+                if (count > 0) {
+                    throw new javax.validation.ValidationException(
+                            String.format("Ya existe un rubro con el nombre '%s' en esta asignación. " +
+                                    "Por favor, use un nombre diferente para evitar confusiones.",
+                                    nombre));
+                }
+            }
+
+            // Validación 2: Suma de ponderaciones no debe exceder 100% (CU-07-TC-03)
+            String jpql = "SELECT COALESCE(SUM(r.ponderacion), 0) FROM Rubro r " +
+                    "WHERE r.asignacion.id = :asignacionId";
+
+            if (this.id != null) {
+                jpql += " AND r.id != :currentId";
+            }
+
+            javax.persistence.Query query = em.createQuery(jpql)
+                    .setParameter("asignacionId", asignacion.getId());
+
+            if (this.id != null) {
+                query.setParameter("currentId", this.id);
+            }
+
+            BigDecimal sumaOtros = (BigDecimal) query.getSingleResult();
+            BigDecimal sumaTotal = sumaOtros.add(this.ponderacion);
+
+            // Verificar que la suma no exceda 100
+            if (sumaTotal.compareTo(new BigDecimal("100.00")) > 0) {
+                throw new javax.validation.ValidationException(
+                        String.format("Error: La suma de ponderaciones excede el 100%%. " +
+                                "Suma actual de otros rubros: %.2f%%, " +
+                                "Esta ponderación: %.2f%%, " +
+                                "Total: %.2f%%",
+                                sumaOtros, this.ponderacion, sumaTotal));
+            }
+        } finally {
+            // Restaurar el flush mode original
+            em.setFlushMode(flushModeOriginal);
         }
     }
 
@@ -97,14 +134,23 @@ public class Rubro {
     public static boolean asignacionTienePonderacionCompleta(Long asignacionId) {
         EntityManager em = org.openxava.jpa.XPersistence.getManager();
 
-        String jpql = "SELECT COALESCE(SUM(r.ponderacion), 0) FROM Rubro r " +
-                "WHERE r.asignacion.id = :asignacionId";
+        // Deshabilitar auto-flush temporalmente para evitar recursión infinita
+        javax.persistence.FlushModeType flushModeOriginal = em.getFlushMode();
+        em.setFlushMode(javax.persistence.FlushModeType.COMMIT);
 
-        BigDecimal suma = (BigDecimal) em.createQuery(jpql)
-                .setParameter("asignacionId", asignacionId)
-                .getSingleResult();
+        try {
+            String jpql = "SELECT COALESCE(SUM(r.ponderacion), 0) FROM Rubro r " +
+                    "WHERE r.asignacion.id = :asignacionId";
 
-        return suma.compareTo(new BigDecimal("100.00")) == 0;
+            BigDecimal suma = (BigDecimal) em.createQuery(jpql)
+                    .setParameter("asignacionId", asignacionId)
+                    .getSingleResult();
+
+            return suma.compareTo(new BigDecimal("100.00")) == 0;
+        } finally {
+            // Restaurar el flush mode original
+            em.setFlushMode(flushModeOriginal);
+        }
     }
 
     /**

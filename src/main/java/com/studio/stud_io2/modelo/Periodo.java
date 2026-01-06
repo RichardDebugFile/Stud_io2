@@ -51,40 +51,50 @@ public class Periodo {
     }
 
     /**
-     * Before persist/update: Validar que solo haya un periodo activo (RF-03)
+     * Validación de permisos antes de cualquier operación (CU-03)
      */
     @PrePersist
     @PreUpdate
-    private void validarPeriodoActivoUnico() {
-        if (this.activo) {
-            EntityManager em = org.openxava.jpa.XPersistence.getManager();
-
-            // Contar periodos activos excluyendo el actual (si tiene ID)
-            String jpql;
-            Long count;
-
-            if (this.id == null) {
-                // Nuevo registro
-                jpql = "SELECT COUNT(p) FROM Periodo p WHERE p.activo = true";
-                count = (Long) em.createQuery(jpql).getSingleResult();
-            } else {
-                // Actualización
-                jpql = "SELECT COUNT(p) FROM Periodo p WHERE p.activo = true AND p.id != :currentId";
-                count = (Long) em.createQuery(jpql)
-                        .setParameter("currentId", this.id)
-                        .getSingleResult();
-            }
-
-            if (count > 0) {
-                throw new javax.validation.ValidationException(
-                        "Ya existe un periodo activo. Solo puede haber un periodo activo a la vez.");
-            }
-        }
-
-        // Validación de permisos (CU-03): Solo académicos y administradores
+    private void validarPermisos() {
+        // Validación de permisos PRIMERO (rápido, sin queries)
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
                     "No tiene permisos para gestionar períodos académicos. Solo Académicos y Administradores pueden realizar esta operación.");
+        }
+
+        // Validación de período activo único (RF-03)
+        if (this.activo) {
+            EntityManager em = org.openxava.jpa.XPersistence.getManager();
+
+            // Deshabilitar auto-flush temporalmente para evitar recursión infinita
+            javax.persistence.FlushModeType flushModeOriginal = em.getFlushMode();
+            em.setFlushMode(javax.persistence.FlushModeType.COMMIT);
+
+            try {
+                // Usar SQL nativo para evitar StackOverflowError (no activa callbacks JPA)
+                String sql = "SELECT COUNT(*) FROM periodos WHERE activo = true";
+
+                javax.persistence.Query query;
+                if (this.id == null) {
+                    // Nuevo registro - buscar cualquier período activo
+                    query = em.createNativeQuery(sql);
+                } else {
+                    // Actualización - excluir el período actual
+                    sql += " AND id != ?";
+                    query = em.createNativeQuery(sql);
+                    query.setParameter(1, this.id);
+                }
+
+                Long count = ((Number) query.getSingleResult()).longValue();
+
+                if (count > 0) {
+                    throw new javax.validation.ValidationException(
+                            "Ya existe un periodo activo. Solo puede haber un periodo activo a la vez.");
+                }
+            } finally {
+                // Restaurar el flush mode original
+                em.setFlushMode(flushModeOriginal);
+            }
         }
     }
 

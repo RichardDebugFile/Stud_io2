@@ -16,7 +16,11 @@ import lombok.*;
 @Setter
 @Table(name = "matriculas", uniqueConstraints = @UniqueConstraint(columnNames = { "estudiante_id", "asignacion_id" }))
 @View(members = "estudiante, asignacion;" +
-        "fechaMatricula, estado")
+        "fechaMatricula, estado;" +
+        "notasYPromedio{" +
+        "promedioPonderado, estadoFinal" +
+        "}")
+@Tab(properties = "estudiante.apellido, estudiante.nombre, asignacion.curso.nombre, asignacion.seccion, promedioPonderado, estadoFinal, estado")
 public class Matricula {
 
     @Id
@@ -39,6 +43,37 @@ public class Matricula {
     @Column(length = 20, nullable = false)
     @Required
     private String estado = "ACTIVA"; // ACTIVA, CANCELADA, RETIRADA
+
+    /**
+     * Campo calculado: Promedio ponderado de calificaciones (CU-08-TC-02)
+     * Se calcula dinámicamente usando Calificacion.calcularPromedioPonderado()
+     */
+    @Transient
+    @ReadOnly
+    @Stereotype("MONEY") // Para mostrar con 2 decimales
+    public java.math.BigDecimal getPromedioPonderado() {
+        if (id == null) {
+            return java.math.BigDecimal.ZERO;
+        }
+        return Calificacion.calcularPromedioPonderado(id);
+    }
+
+    /**
+     * Campo calculado: Estado final del estudiante (CU-08-TC-03)
+     * Determina APROBADO/REPROBADO basado en el promedio ponderado
+     */
+    @Transient
+    @ReadOnly
+    public String getEstadoFinal() {
+        if (id == null) {
+            return "PENDIENTE";
+        }
+        java.math.BigDecimal promedio = getPromedioPonderado();
+        if (promedio.compareTo(java.math.BigDecimal.ZERO) == 0) {
+            return "SIN CALIFICACIONES";
+        }
+        return Calificacion.determinarEstadoFinal(promedio);
+    }
 
     /**
      * Before persist: Validar cupos disponibles y permisos (RF-06)
