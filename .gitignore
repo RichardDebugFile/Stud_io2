@@ -37,3 +37,8 @@ env/
 .env/
 data/stud_io2-db.lck
 nul
+
+# Utility scripts
+limpiar_git_target.ps1
+exportar_docker.ps1
+importar_docker.ps1
