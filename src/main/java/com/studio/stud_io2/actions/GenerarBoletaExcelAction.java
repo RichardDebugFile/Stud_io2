@@ -57,6 +57,11 @@ public class GenerarBoletaExcelAction extends ViewBaseAction {
         f.setBold(true);
         bold.setFont(f);
 
+        // Estilo para números con 2 decimales
+        CellStyle numberStyle = wb.createCellStyle();
+        org.apache.poi.ss.usermodel.DataFormat format = wb.createDataFormat();
+        numberStyle.setDataFormat(format.getFormat("0.00"));
+
         int r = 0;
         Row row = sh.createRow(r++);
         Cell c = row.createCell(0);
@@ -86,22 +91,34 @@ public class GenerarBoletaExcelAction extends ViewBaseAction {
             Object[] cal = (Object[]) item;
             row = sh.createRow(r++);
             row.createCell(0).setCellValue((String) cal[0]);
-            row.createCell(1).setCellValue(((BigDecimal) cal[1]).doubleValue());
-            row.createCell(2).setCellValue(((BigDecimal) cal[2]).doubleValue());
+
+            Cell notaCell = row.createCell(1);
+            notaCell.setCellValue(((BigDecimal) cal[1]).doubleValue());
+            notaCell.setCellStyle(numberStyle);
+
+            Cell ponderacionCell = row.createCell(2);
+            ponderacionCell.setCellValue(((BigDecimal) cal[2]).doubleValue());
+            ponderacionCell.setCellStyle(numberStyle);
         }
 
         r++;
         row = sh.createRow(r++);
         row.createCell(0).setCellValue("PROMEDIO:");
-        row.createCell(1).setCellValue(promedio.doubleValue());
+        Cell promedioCell = row.createCell(1);
+        promedioCell.setCellValue(promedio.doubleValue());
+        promedioCell.setCellStyle(numberStyle);
 
         row = sh.createRow(r++);
         row.createCell(0).setCellValue("ESTADO:");
         row.createCell(1).setCellValue(estado);
 
-        sh.autoSizeColumn(0);
-        sh.autoSizeColumn(1);
-        sh.autoSizeColumn(2);
+        // Ajustar ancho de columnas - usar ancho fijo para columnas numéricas
+        sh.autoSizeColumn(0); // Columna de texto (Rubro, PROMEDIO, etc.)
+        sh.setColumnWidth(0, sh.getColumnWidth(0) + 1024);
+
+        // Columnas numéricas: establecer ancho fijo suficiente para decimales
+        sh.setColumnWidth(1, 4000); // Nota: ~15 caracteres (suficiente para "100.00")
+        sh.setColumnWidth(2, 4000); // Ponderación: ~15 caracteres
 
         File tempDir = new File(System.getProperty("java.io.tmpdir"));
         File outFile = new File(tempDir, "boleta_" + nombre.replace(" ", "_") + ".xlsx");

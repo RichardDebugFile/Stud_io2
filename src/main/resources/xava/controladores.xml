@@ -4,13 +4,18 @@
 
 <controladores>
     
-    <!-- Controlador para Matricula con accion de generar boleta Excel -->
+    <!-- Controlador para Matricula con acciones de generar reportes Excel -->
     <controlador nombre="MatriculaController">
         <hereda-de controlador="Typical"/>
-        <accion nombre="generarBoleta" 
+        <accion nombre="generarBoleta"
                 etiqueta="Generar Boleta Excel"
                 clase="com.studio.stud_io2.actions.GenerarBoletaExcelAction"
                 icono="document"/>
+        <accion nombre="generarListaMatriculas"
+                etiqueta="Exportar Lista Excel"
+                clase="com.studio.stud_io2.actions.GenerarListaMatriculasExcelAction"
+                icono="table"
+                modo="list"/>
     </controlador>
     
     <!-- Controlador para Asignacion con accion de generar lista de clase -->

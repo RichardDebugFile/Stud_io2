@@ -18,9 +18,9 @@ import lombok.*;
 @View(members = "estudiante, asignacion;" +
         "fechaMatricula, estado;" +
         "notasYPromedio{" +
-        "promedioPonderado, estadoFinal" +
+        "promedioPonderado, estadoFinal, porcentajeAsistencia" +
         "}")
-@Tab(properties = "estudiante.apellido, estudiante.nombre, asignacion.curso.nombre, asignacion.seccion, promedioPonderado, estadoFinal, estado")
+@Tab(properties = "estudiante.apellido, estudiante.nombre, asignacion.curso.nombre, asignacion.seccion, promedioPonderado, estadoFinal, porcentajeAsistencia, estado")
 public class Matricula {
 
     @Id
@@ -73,6 +73,20 @@ public class Matricula {
             return "SIN CALIFICACIONES";
         }
         return Calificacion.determinarEstadoFinal(promedio);
+    }
+
+    /**
+     * Campo calculado: Porcentaje de asistencia (CU-09-TC-03)
+     * Calcula el porcentaje de asistencias del estudiante
+     */
+    @Transient
+    @ReadOnly
+    @Stereotype("MONEY") // Para mostrar con 2 decimales
+    public Double getPorcentajeAsistencia() {
+        if (id == null) {
+            return 0.0;
+        }
+        return Asistencia.calcularPorcentajeAsistencia(id);
     }
 
     /**

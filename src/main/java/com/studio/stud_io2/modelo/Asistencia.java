@@ -20,6 +20,17 @@ import lombok.*;
         "observaciones")
 public class Asistencia {
 
+    /**
+     * Enum para los estados de asistencia
+     * Garantiza que solo se usen valores válidos en el sistema
+     */
+    public enum EstadoAsistencia {
+        PRESENTE,
+        AUSENTE,
+        TARDANZA,
+        JUSTIFICADO
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,9 +44,10 @@ public class Asistencia {
     @DefaultValueCalculator(CurrentLocalDateCalculator.class)
     private java.time.LocalDate fecha;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     @Required
-    private String estado = "PRESENTE"; // PRESENTE, AUSENTE, TARDANZA, JUSTIFICADO
+    private EstadoAsistencia estado = EstadoAsistencia.PRESENTE;
 
     @Column(length = 200)
     @Stereotype("MEMO")
@@ -43,7 +55,7 @@ public class Asistencia {
 
     /**
      * Calcula el porcentaje de asistencia para una matricula
-     * 
+     *
      * @param matriculaId ID de la matricula
      * @return Porcentaje de asistencia (0-100)
      */
@@ -60,15 +72,45 @@ public class Asistencia {
             return 0.0;
         }
 
-        // Total de asistencias (PRESENTE o TARDANZA)
+        // Total de asistencias (PRESENTE, TARDANZA o JUSTIFICADO)
         String jpqlPresentes = "SELECT COUNT(a) FROM Asistencia a " +
                 "WHERE a.matricula.id = :matriculaId " +
-                "AND a.estado IN ('PRESENTE', 'TARDANZA', 'JUSTIFICADO')";
+                "AND a.estado IN (:presente, :tardanza, :justificado)";
         Long presentes = (Long) em.createQuery(jpqlPresentes)
                 .setParameter("matriculaId", matriculaId)
+                .setParameter("presente", EstadoAsistencia.PRESENTE)
+                .setParameter("tardanza", EstadoAsistencia.TARDANZA)
+                .setParameter("justificado", EstadoAsistencia.JUSTIFICADO)
                 .getSingleResult();
 
         return (presentes.doubleValue() / total.doubleValue()) * 100.0;
+    }
+
+    /**
+     * Validación de fecha dentro del rango del periodo (CU-09-TC-06)
+     */
+    @PrePersist
+    @PreUpdate
+    private void validarFechaEnRangoPeriodo() {
+        if (matricula == null || fecha == null) {
+            return; // @Required se encargará de esto
+        }
+
+        // Obtener el periodo a través de la asignación
+        if (matricula.getAsignacion() != null && matricula.getAsignacion().getPeriodo() != null) {
+            java.time.LocalDate fechaInicio = matricula.getAsignacion().getPeriodo().getFechaInicio();
+            java.time.LocalDate fechaFin = matricula.getAsignacion().getPeriodo().getFechaFin();
+
+            if (fechaInicio != null && fechaFin != null) {
+                if (fecha.isBefore(fechaInicio) || fecha.isAfter(fechaFin)) {
+                    throw new javax.validation.ValidationException(
+                            String.format(
+                                    "Fecha fuera del rango permitido del periodo. " +
+                                            "La fecha debe estar entre %s y %s.",
+                                    fechaInicio, fechaFin));
+                }
+            }
+        }
     }
 
     /**

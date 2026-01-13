@@ -12,4 +12,16 @@
 		<controlador nombre="Typical"/>
 	</modulo-defecto>
 
+	<!-- Módulo Matricula con controlador personalizado -->
+	<modulo nombre="Matricula">
+		<modelo nombre="Matricula"/>
+		<controlador nombre="MatriculaController"/>
+	</modulo>
+
+	<!-- Módulo Asignacion con controlador personalizado -->
+	<modulo nombre="Asignacion">
+		<modelo nombre="Asignacion"/>
+		<controlador nombre="AsignacionController"/>
+	</modulo>
+
 </aplicacion>

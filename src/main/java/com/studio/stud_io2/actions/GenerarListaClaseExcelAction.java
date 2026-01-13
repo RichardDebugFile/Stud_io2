@@ -9,11 +9,11 @@ import org.openxava.actions.*;
 import org.openxava.jpa.*;
 
 /**
- * Acción para generar lista de clase en formato Excel.
+ * Acciï¿½n para generar lista de clase en formato Excel.
  * 
- * RF-10: Generación de reportes (Lista de Clase en Excel)
- * Requisito: El sistema debe permitir la generación de reportes acadÃ©micos.
- * Cumplimiento: Genera lista de estudiantes matriculados por sección.
+ * RF-10: Generaciï¿½n de reportes (Lista de Clase en Excel)
+ * Requisito: El sistema debe permitir la generaciï¿½n de reportes acadÃ©micos.
+ * Cumplimiento: Genera lista de estudiantes matriculados por secciï¿½n.
  */
 public class GenerarListaClaseExcelAction extends ViewBaseAction {
 
@@ -48,6 +48,11 @@ public class GenerarListaClaseExcelAction extends ViewBaseAction {
         f.setBold(true);
         bold.setFont(f);
 
+        // Estilo para nÃºmeros enteros
+        CellStyle numberStyle = wb.createCellStyle();
+        DataFormat format = wb.createDataFormat();
+        numberStyle.setDataFormat(format.getFormat("0"));
+
         int r = 0;
         Row row = sh.createRow(r++);
         Cell c = row.createCell(0);
@@ -73,7 +78,9 @@ public class GenerarListaClaseExcelAction extends ViewBaseAction {
 
         row = sh.createRow(r++);
         row.createCell(0).setCellValue("Total:");
-        row.createCell(1).setCellValue(resultList.size());
+        Cell totalCell = row.createCell(1);
+        totalCell.setCellValue(resultList.size());
+        totalCell.setCellStyle(numberStyle);
 
         r++;
         row = sh.createRow(r++);
@@ -86,16 +93,24 @@ public class GenerarListaClaseExcelAction extends ViewBaseAction {
         for (Object item : resultList) {
             Object[] est = (Object[]) item;
             row = sh.createRow(r++);
-            row.createCell(0).setCellValue(num++);
+
+            Cell numCell = row.createCell(0);
+            numCell.setCellValue(num++);
+            numCell.setCellStyle(numberStyle);
+
             row.createCell(1).setCellValue((String) est[0]);
             row.createCell(2).setCellValue(est[2] + " " + est[1]);
             row.createCell(3).setCellValue((String) est[3]);
         }
 
-        sh.autoSizeColumn(0);
-        sh.autoSizeColumn(1);
-        sh.autoSizeColumn(2);
-        sh.autoSizeColumn(3);
+        // Ajustar ancho de columnas
+        sh.setColumnWidth(0, 2000); // No.: ancho fijo pequeÃ±o
+        sh.autoSizeColumn(1); // CÃ©dula
+        sh.setColumnWidth(1, sh.getColumnWidth(1) + 1024);
+        sh.autoSizeColumn(2); // Nombre
+        sh.setColumnWidth(2, sh.getColumnWidth(2) + 1024);
+        sh.autoSizeColumn(3); // Email
+        sh.setColumnWidth(3, sh.getColumnWidth(3) + 1024);
 
         File tempDir = new File(System.getProperty("java.io.tmpdir"));
         File outFile = new File(tempDir, "lista_" + curso.replace(" ", "_") + "_" + seccion + ".xlsx");
