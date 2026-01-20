@@ -8,8 +8,8 @@ import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
 /**
- * Listener JPA SIMPLIFICADO para auditoría
- * Versión corregida que funciona con las transacciones de OpenXava
+ * Listener JPA SIMPLIFICADO para auditoria
+ * Version corregida que funciona con las transacciones de OpenXava
  */
 public class AuditListener {
 
@@ -35,7 +35,7 @@ public class AuditListener {
                 return;
             }
 
-            // Crear log en la MISMA transacción (sin begin/commit manual)
+            // Crear log en la MISMA transaccion (sin begin/commit manual)
             EntityManager em = XPersistence.getManager();
 
             AuditLog log = new AuditLog();
@@ -47,11 +47,11 @@ public class AuditListener {
             log.setCambios(generarDescripcion(entity, accion));
             log.setIp("localhost");
 
-            // SOLO persist - la transacción es manejada por OpenXava
+            // SOLO persist - la transaccion es manejada por OpenXava
             em.persist(log);
 
         } catch (Exception e) {
-            // Silently fail - no queremos romper la operación principal
+            // Silently fail - no queremos romper la operacion principal
             System.err.println("[AUDIT] Error: " + e.getMessage());
             e.printStackTrace();
         }
@@ -71,7 +71,7 @@ public class AuditListener {
             // Intentar con getter primero
             return (Long) entity.getClass().getMethod("getId").invoke(entity);
         } catch (Exception e) {
-            // Buscar con reflexión
+            // Buscar con reflexion
             try {
                 for (Field field : entity.getClass().getDeclaredFields()) {
                     if (field.isAnnotationPresent(Id.class)) {
@@ -93,13 +93,13 @@ public class AuditListener {
 
         switch (accion) {
             case CREATE:
-                return String.format("Creó %s #%d", entityName, id);
+                return String.format("Creo %s #%d", entityName, id);
             case UPDATE:
-                return String.format("Modificó %s #%d", entityName, id);
+                return String.format("Modifico %s #%d", entityName, id);
             case DELETE:
-                return String.format("Eliminó %s #%d", entityName, id);
+                return String.format("Elimino %s #%d", entityName, id);
             default:
-                return "Acción desconocida";
+                return "Accion desconocida";
         }
     }
 }

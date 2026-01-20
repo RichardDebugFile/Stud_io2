@@ -12,22 +12,22 @@ import org.openxava.jpa.*;
 import com.studio.stud_io2.modelo.Matricula;
 
 /**
- * Acción para generar lista de matrículas en formato Excel.
+ * Accion para generar lista de matriculas en formato Excel.
  *
- * RF-10: Generación de reportes (Lista de Matrículas en Excel)
- * Genera Excel con formato correcto para columnas numéricas (promedio y porcentaje asistencia)
+ * RF-10: Generacion de reportes (Lista de Matriculas en Excel)
+ * Genera Excel con formato correcto para columnas numericas (promedio y porcentaje asistencia)
  */
 public class GenerarListaMatriculasExcelAction extends TabBaseAction {
 
     public void execute() throws Exception {
-        // Obtener todas las matrículas
+        // Obtener todas las matriculas
         String jpql = "SELECT m FROM Matricula m ORDER BY m.estudiante.apellido, m.estudiante.nombre";
 
         @SuppressWarnings("unchecked")
         List<Matricula> matriculas = XPersistence.getManager().createQuery(jpql).getResultList();
 
         if (matriculas.isEmpty()) {
-            addError("No existen matrículas para exportar");
+            addError("No existen matriculas para exportar");
             return;
         }
 
@@ -48,9 +48,9 @@ public class GenerarListaMatriculasExcelAction extends TabBaseAction {
         int r = 0;
         Row headerRow = sh.createRow(r++);
 
-        String[] headers = {"Apellido", "Nombre", "Curso", "Sección",
+        String[] headers = {"Apellido", "Nombre", "Curso", "Seccion",
                            "Promedio Ponderado", "Estado Final",
-                           "Porcentaje Asistencia", "Estado Matrícula"};
+                           "Porcentaje Asistencia", "Estado Matricula"};
 
         for (int i = 0; i < headers.length; i++) {
             Cell cell = headerRow.createCell(i);
@@ -71,7 +71,7 @@ public class GenerarListaMatriculasExcelAction extends TabBaseAction {
             // Curso
             row.createCell(2).setCellValue(m.getAsignacion().getCurso().getNombre());
 
-            // Sección
+            // Seccion
             row.createCell(3).setCellValue(m.getAsignacion().getSeccion());
 
             // Promedio Ponderado (con formato decimal)
@@ -89,7 +89,7 @@ public class GenerarListaMatriculasExcelAction extends TabBaseAction {
             porcentajeCell.setCellValue(porcentaje);
             porcentajeCell.setCellStyle(numberStyle);
 
-            // Estado Matrícula
+            // Estado Matricula
             row.createCell(7).setCellValue(m.getEstado());
         }
 
@@ -103,7 +103,7 @@ public class GenerarListaMatriculasExcelAction extends TabBaseAction {
         sh.autoSizeColumn(2); // Curso
         sh.setColumnWidth(2, sh.getColumnWidth(2) + 1024);
 
-        sh.setColumnWidth(3, 3000); // Sección
+        sh.setColumnWidth(3, 3000); // Seccion
 
         sh.setColumnWidth(4, 5000); // Promedio Ponderado - ancho fijo para decimales
 
@@ -112,7 +112,7 @@ public class GenerarListaMatriculasExcelAction extends TabBaseAction {
 
         sh.setColumnWidth(6, 5000); // Porcentaje Asistencia - ancho fijo para decimales
 
-        sh.autoSizeColumn(7); // Estado Matrícula
+        sh.autoSizeColumn(7); // Estado Matricula
         sh.setColumnWidth(7, sh.getColumnWidth(7) + 1024);
 
         // Guardar archivo
@@ -124,6 +124,6 @@ public class GenerarListaMatriculasExcelAction extends TabBaseAction {
         fos.close();
         wb.close();
 
-        addMessage("Lista de matrículas generada: " + outFile.getAbsolutePath());
+        addMessage("Lista de matriculas generada: " + outFile.getAbsolutePath());
     }
 }

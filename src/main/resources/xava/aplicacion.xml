@@ -5,20 +5,20 @@
 <aplicacion nombre="stud_io2">
 
 	<!--
-	Un módulo por defecto se asume para cada
+	Un modulo por defecto se asume para cada
 	componente con el controlador Typical
 	-->
 	<modulo-defecto>
 		<controlador nombre="Typical"/>
 	</modulo-defecto>
 
-	<!-- Módulo Matricula con controlador personalizado -->
+	<!-- Modulo Matricula con controlador personalizado -->
 	<modulo nombre="Matricula">
 		<modelo nombre="Matricula"/>
 		<controlador nombre="MatriculaController"/>
 	</modulo>
 
-	<!-- Módulo Asignacion con controlador personalizado -->
+	<!-- Modulo Asignacion con controlador personalizado -->
 	<modulo nombre="Asignacion">
 		<modelo nombre="Asignacion"/>
 		<controlador nombre="AsignacionController"/>

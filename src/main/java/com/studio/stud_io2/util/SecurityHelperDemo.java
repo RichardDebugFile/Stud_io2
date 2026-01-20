@@ -3,7 +3,7 @@ package com.studio.stud_io2.util;
 import com.studio.stud_io2.util.SecurityHelper.Rol;
 
 /**
- * Demo para visualizar los 5 caminos independientes del método getRol()
+ * Demo para visualizar los 5 caminos independientes del metodo getRol()
  * Este programa muestra los resultados para cada uno de los 5 caminos (P1-P5)
  */
 public class SecurityHelperDemo {

@@ -3,16 +3,16 @@ package com.studio.stud_io2.util;
 import org.openxava.util.*;
 
 /**
- * Helper de Seguridad - Gestión de roles sin XavaPro
+ * Helper de Seguridad - Gestiï¿½n de roles sin XavaPro
  * 
  * Implementa un sistema de roles basado en convenciones de nombres de usuario
- * ya que OpenXava gratuito no incluye gestión de roles desde interfaz.
+ * ya que OpenXava gratuito no incluye gestiï¿½n de roles desde interfaz.
  * 
  * CONVENCIONES:
- * - admin* =†’ ADMINISTRADOR
- * - academico_* =†’ ACADEMICO
+ * - admin* =ï¿½ï¿½ ADMINISTRADOR
+ * - academico_* =ï¿½ï¿½ ACADEMICO
  * - docente_* = DOCENTE
- * - Otros =’ USUARIO (sin permisos especiales)
+ * - Otros =ï¿½ USUARIO (sin permisos especiales)
  */
 public class SecurityHelper {
 
@@ -21,9 +21,9 @@ public class SecurityHelper {
      */
     public enum Rol {
         ADMINISTRADOR, // Acceso total
-        ACADEMICO, // GestiÃ³n acadÃ©mica
-        DOCENTE, // OperaciÃ³n de aula
-        USUARIO // Usuario genÃ©rico (sin permisos)
+        ACADEMICO, // Gestion academica
+        DOCENTE, // Operacion de aula
+        USUARIO // Usuario generico (sin permisos)
     }
 
     /**
@@ -41,14 +41,14 @@ public class SecurityHelper {
     }
 
     /**
-     * Determina el rol basándose en el nombre de usuario
+     * Determina el rol basï¿½ndose en el nombre de usuario
      * 
      * @param username Nombre de usuario
      * @return Rol correspondiente
      */
     
     public static Rol getRol(String username) {
-    	// Decisión D1
+    	// Decisiï¿½n D1
         if (username == null || username.trim().isEmpty()) {
             return Rol.USUARIO; // Salida E1
         }
@@ -56,24 +56,24 @@ public class SecurityHelper {
         String user = username.toLowerCase().trim();
 
         // ADMINISTRADORES: admin o admin_*
-        // Decisión D2
+        // Decisiï¿½n D2
         if (user.equals("admin") || user.startsWith("admin_")) {
             return Rol.ADMINISTRADOR; // Salida E2
         }
 
-        // ACADÉMICOS: academico_*
-        //Decisión D3
+        // ACADï¿½MICOS: academico_*
+        //Decisiï¿½n D3
         if (user.startsWith("academico_")) {
             return Rol.ACADEMICO; // Salida E3
         }
 
         // DOCENTES: docente_*
-        // Decisión D4
+        // Decisiï¿½n D4
         if (user.startsWith("docente_")) {
             return Rol.DOCENTE; // Salida E4
         }
 
-        // Por defecto: usuario sin rol especÃ­fico
+        // Por defecto: usuario sin rol especifico
         return Rol.USUARIO; // Salida E5
     }
 
@@ -85,7 +85,7 @@ public class SecurityHelper {
     }
 
     /**
-     * Verifica si el usuario actual es académico o administrador
+     * Verifica si el usuario actual es acadï¿½mico o administrador
      */
     public static boolean esAcademicoOSuperior() {
         Rol rol = getRolActual();
@@ -111,8 +111,8 @@ public class SecurityHelper {
     }
 
     /**
-     * Obtiene el email del docente basándose en el username
-     * Convención: docente_nombre =†’ nombre@profesores.edu.ec
+     * Obtiene el email del docente basï¿½ndose en el username
+     * Convenciï¿½n: docente_nombre =ï¿½ï¿½ nombre@profesores.edu.ec
      * 
      * @param username Nombre de usuario (ej: docente_silva)
      * @return Email del docente (ej: roberto.silva@profesores.edu.ec)
@@ -141,17 +141,17 @@ public class SecurityHelper {
             case "docente_mendoza":
                 return "andres.mendoza@profesores.edu.ec";
             default:
-                // Generar email basado en convención
+                // Generar email basado en convenciï¿½n
                 String nombre = user.substring(8); // Quitar "docente_"
                 return nombre + "@profesores.edu.ec";
         }
     }
 
     /**
-     * Valida si el usuario actual tiene permiso para operación específica
+     * Valida si el usuario actual tiene permiso para operaciï¿½n especï¿½fica
      * 
-     * @param operacion Tipo de operaciÃ³n (CREATE, READ, UPDATE, DELETE)
-     * @param modulo    Nombre del mÃ³dulo
+     * @param operacion Tipo de operacion (CREATE, READ, UPDATE, DELETE)
+     * @param modulo    Nombre del modulo
      * @return true si tiene permiso
      */
     public static boolean tienePermiso(String operacion, String modulo) {
@@ -162,24 +162,24 @@ public class SecurityHelper {
             return true;
         }
 
-        // ACADÃ‰MICO: Casi todo excepto modificar docentes
+        // ACADEMICO: Casi todo excepto modificar docentes
         if (rol == Rol.ACADEMICO) {
             if (modulo.equals("Docente") && (operacion.equals("UPDATE") || operacion.equals("DELETE"))) {
-                return false; // AcadÃ©micos no pueden modificar/eliminar docentes
+                return false; // Academicos no pueden modificar/eliminar docentes
             }
             return true;
         }
 
         // DOCENTE: Solo operaciones de aula en sus secciones
         if (rol == Rol.DOCENTE) {
-            // MÃ³dulos de solo lectura
+            // Modulos de solo lectura
             if (modulo.equals("Estudiante") || modulo.equals("Docente") ||
                     modulo.equals("Periodo") || modulo.equals("Curso") ||
                     modulo.equals("Asignacion") || modulo.equals("Matricula")) {
                 return operacion.equals("READ");
             }
 
-            // MÃ³dulos de gestiÃ³n (sin eliminar)
+            // Modulos de gestion (sin eliminar)
             if (modulo.equals("Rubro") || modulo.equals("Calificacion") || modulo.equals("Asistencia")) {
                 return !operacion.equals("DELETE");
             }

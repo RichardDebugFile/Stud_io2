@@ -49,8 +49,8 @@ public class Asignacion {
     private String seccion; // Ejemplo: "A", "B", "M1"
 
     @Column(name = "cupo_maximo", nullable = false)
-    @Min(value = 1, message = "El cupo máximo debe ser al menos 1")
-    @Max(value = 100, message = "El cupo máximo no puede exceder 100")
+    @Min(value = 1, message = "El cupo maximo debe ser al menos 1")
+    @Max(value = 100, message = "El cupo maximo no puede exceder 100")
     @Required
     private Integer cupoMaximo;
 
@@ -61,16 +61,16 @@ public class Asignacion {
     private LocalTime horarioFin;
 
     @Column(name = "dias_semana", length = 50)
-    private String diasSemana; // Ejemplo: "Lunes,Miércoles,Viernes"
+    private String diasSemana; // Ejemplo: "Lunes,Miercoles,Viernes"
 
     /**
-     * Relación con matrículas
+     * Relacion con matriculas
      */
     @OneToMany(mappedBy = "asignacion")
     private Collection<Matricula> matriculas;
 
     /**
-     * Validación de horarios: Hora inicio debe ser anterior a hora fin
+     * Validacion de horarios: Hora inicio debe ser anterior a hora fin
      */
     @AssertTrue(message = "La hora de inicio debe ser anterior a la hora de fin")
     public boolean isHorariosValidos() {
@@ -82,7 +82,7 @@ public class Asignacion {
 
     /**
      * Validaciones antes de persistir o actualizar:
-     * 0. Solo académicos y administradores pueden crear/modificar (CU-06)
+     * 0. Solo academicos y administradores pueden crear/modificar (CU-06)
      * 1. El periodo debe estar activo (solo en @PrePersist)
      * 2. No debe haber conflictos de horario con otras asignaciones del docente (RF-05)
      */
@@ -92,24 +92,24 @@ public class Asignacion {
         // Validacion 0: Permisos (CU-06)
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para gestionar asignaciones. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para gestionar asignaciones. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
 
         // Validacion 1: Periodo activo (solo al crear)
         if (periodo != null && !periodo.isActivo()) {
             throw new javax.validation.ValidationException(
-                    "El periodo académico no permite nuevas asignaciones. " +
+                    "El periodo academico no permite nuevas asignaciones. " +
                             "Solo se pueden crear asignaciones en periodos activos.");
         }
 
         // Validacion 2: Conflictos de horario
         if (docente == null || periodo == null || horarioInicio == null || horarioFin == null) {
-            return; // Las validaciones @Required se encargarán
+            return; // Las validaciones @Required se encargaran
         }
 
         EntityManager em = org.openxava.jpa.XPersistence.getManager();
 
-        // Deshabilitar auto-flush temporalmente para evitar recursión infinita
+        // Deshabilitar auto-flush temporalmente para evitar recursion infinita
         javax.persistence.FlushModeType flushModeOriginal = em.getFlushMode();
         em.setFlushMode(javax.persistence.FlushModeType.COMMIT);
 
@@ -138,14 +138,14 @@ public class Asignacion {
             em.setFlushMode(flushModeOriginal);
         }
 
-        // Verificar superposición de horarios en los mismos días
+        // Verificar superposicion de horarios en los mismos dias
         for (Asignacion otra : otrasAsignaciones) {
             if (haySuposicionDias(this.diasSemana, otra.getDiasSemana()) &&
                     haySuposicionHorarios(this.horarioInicio, this.horarioFin,
                             otra.getHorarioInicio(), otra.getHorarioFin())) {
                 throw new javax.validation.ValidationException(
                         String.format(
-                                "Conflicto de horario: El docente %s ya tiene asignada la sección %s del curso %s " +
+                                "Conflicto de horario: El docente %s ya tiene asignada la seccion %s del curso %s " +
                                         "que se superpone con este horario (%s a %s)",
                                 docente.getNombreCompleto(),
                                 otra.getSeccion(),
@@ -166,11 +166,11 @@ public class Asignacion {
     }
 
     /**
-     * Verifica si dos conjuntos de días tienen al menos un día en común
-     * Si alguno no especifica días, asume que potencialmente se superponen
+     * Verifica si dos conjuntos de dias tienen al menos un dia en comun
+     * Si alguno no especifica dias, asume que potencialmente se superponen
      */
     private boolean haySuposicionDias(String dias1, String dias2) {
-        // Si alguno no tiene días especificados, asumir superposición potencial
+        // Si alguno no tiene dias especificados, asumir superposicion potencial
         if (dias1 == null || dias1.isEmpty() || dias2 == null || dias2.isEmpty()) {
             return true;
         }
@@ -178,12 +178,12 @@ public class Asignacion {
         Set<String> set1 = new HashSet<>(Arrays.asList(dias1.split(",")));
         Set<String> set2 = new HashSet<>(Arrays.asList(dias2.split(",")));
 
-        set1.retainAll(set2); // Intersección
+        set1.retainAll(set2); // Interseccion
         return !set1.isEmpty();
     }
 
     /**
-     * Obtiene el número de estudiantes matriculados actualmente
+     * Obtiene el numero de estudiantes matriculados actualmente
      */
     @Transient
     public int getMatriculasActivas() {
@@ -203,13 +203,13 @@ public class Asignacion {
     }
 
     /**
-     * Validación de permisos: Solo académicos y administradores pueden eliminar asignaciones (CU-06)
+     * Validacion de permisos: Solo academicos y administradores pueden eliminar asignaciones (CU-06)
      */
     @PreRemove
     private void validarPermisoEliminar() {
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para eliminar asignaciones. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para eliminar asignaciones. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
     }
 }

@@ -50,23 +50,23 @@ public class Rubro {
     /**
      * Before persist/update: Validar que la suma total de ponderaciones sea 100%
      * (RF-07)
-     * REGLA DE ORO para Validación y Verificación
+     * REGLA DE ORO para Validacion y Verificacion
      */
     @PrePersist
     @PreUpdate
     private void validarSumaPonderaciones() {
         if (asignacion == null) {
-            return; // La validación @Required se encargará
+            return; // La validacion @Required se encargara
         }
 
         EntityManager em = org.openxava.jpa.XPersistence.getManager();
 
-        // Deshabilitar auto-flush temporalmente para evitar recursión infinita
+        // Deshabilitar auto-flush temporalmente para evitar recursion infinita
         javax.persistence.FlushModeType flushModeOriginal = em.getFlushMode();
         em.setFlushMode(javax.persistence.FlushModeType.COMMIT);
 
         try {
-            // Validación 1: Nombre duplicado en la misma asignación (CU-07-TC-05)
+            // Validacion 1: Nombre duplicado en la misma asignacion (CU-07-TC-05)
             if (nombre != null && !nombre.trim().isEmpty()) {
                 String jpqlNombre = "SELECT COUNT(r) FROM Rubro r " +
                         "WHERE r.asignacion.id = :asignacionId " +
@@ -88,13 +88,13 @@ public class Rubro {
 
                 if (count > 0) {
                     throw new javax.validation.ValidationException(
-                            String.format("Ya existe un rubro con el nombre '%s' en esta asignación. " +
+                            String.format("Ya existe un rubro con el nombre '%s' en esta asignacion. " +
                                     "Por favor, use un nombre diferente para evitar confusiones.",
                                     nombre));
                 }
             }
 
-            // Validación 2: Suma de ponderaciones no debe exceder 100% (CU-07-TC-03)
+            // Validacion 2: Suma de ponderaciones no debe exceder 100% (CU-07-TC-03)
             String jpql = "SELECT COALESCE(SUM(r.ponderacion), 0) FROM Rubro r " +
                     "WHERE r.asignacion.id = :asignacionId";
 
@@ -117,7 +117,7 @@ public class Rubro {
                 throw new javax.validation.ValidationException(
                         String.format("Error: La suma de ponderaciones excede el 100%%. " +
                                 "Suma actual de otros rubros: %.2f%%, " +
-                                "Esta ponderación: %.2f%%, " +
+                                "Esta ponderacion: %.2f%%, " +
                                 "Total: %.2f%%",
                                 sumaOtros, this.ponderacion, sumaTotal));
             }
@@ -128,13 +128,13 @@ public class Rubro {
     }
 
     /**
-     * Método auxiliar para verificar si la asignación tiene exactamente 100% de
-     * ponderación
+     * Metodo auxiliar para verificar si la asignacion tiene exactamente 100% de
+     * ponderacion
      */
     public static boolean asignacionTienePonderacionCompleta(Long asignacionId) {
         EntityManager em = org.openxava.jpa.XPersistence.getManager();
 
-        // Deshabilitar auto-flush temporalmente para evitar recursión infinita
+        // Deshabilitar auto-flush temporalmente para evitar recursion infinita
         javax.persistence.FlushModeType flushModeOriginal = em.getFlushMode();
         em.setFlushMode(javax.persistence.FlushModeType.COMMIT);
 
@@ -154,14 +154,14 @@ public class Rubro {
     }
 
     /**
-     * Validación de permisos: Solo académicos y administradores pueden eliminar rubros (CU-07)
+     * Validacion de permisos: Solo academicos y administradores pueden eliminar rubros (CU-07)
      * Los docentes pueden crear y modificar, pero no eliminar
      */
     @PreRemove
     private void validarPermisoEliminar() {
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para eliminar rubros. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para eliminar rubros. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
     }
 }

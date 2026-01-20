@@ -6,8 +6,8 @@ import org.openxava.annotations.*;
 import java.time.LocalDateTime;
 
 /**
- * Entidad de Auditoría - Registra todas las operaciones CUD del sistema
- * Cumple RNF-06: Auditoría de cambios
+ * Entidad de Auditoria - Registra todas las operaciones CUD del sistema
+ * Cumple RNF-06: Auditoria de cambios
  */
 @Entity
 @Getter
@@ -63,9 +63,9 @@ public class AuditLog {
     private String ip;
 
     public enum TipoAccion {
-        CREATE, // Creación
-        UPDATE, // Actualización
-        DELETE // Eliminación
+        CREATE, // Creacion
+        UPDATE, // Actualizacion
+        DELETE // Eliminacion
     }
 
     @PrePersist

@@ -6,8 +6,8 @@ import org.openxava.annotations.*;
 import lombok.*;
 
 /**
- * Entidad Docente - Representa un profesor en el sistema académico
- * RF-02: Garantiza unicidad de Cédula y control de perfil
+ * Entidad Docente - Representa un profesor en el sistema academico
+ * RF-02: Garantiza unicidad de Cedula y control de perfil
  */
 @Entity
 @EntityListeners(com.studio.stud_io2.listeners.AuditListener.class)
@@ -31,7 +31,7 @@ public class Docente {
 
     @Column(length = 10, unique = true, nullable = false)
     @Required
-    @Pattern(regexp = "\\d{10}", message = "La cédula debe tener 10 dígitos")
+    @Pattern(regexp = "\\d{10}", message = "La cedula debe tener 10 digitos")
     private String cedula;
 
     @Column(length = 50, nullable = false)
@@ -44,11 +44,11 @@ public class Docente {
 
     @Column(length = 100, unique = true, nullable = false)
     @Required
-    @Email(message = "Formato de email inválido")
+    @Email(message = "Formato de email invalido")
     private String email;
 
     @Column(length = 15, unique = true)
-    @Pattern(regexp = "\\d{7,15}", message = "El teléfono debe contener entre 7 y 15 dígitos")
+    @Pattern(regexp = "\\d{7,15}", message = "El telefono debe contener entre 7 y 15 digitos")
     private String telefono;
 
     @Column(length = 100)
@@ -66,20 +66,20 @@ public class Docente {
     }
 
     /**
-     * Validación de permisos: Solo académicos y administradores pueden crear docentes (CU-02)
+     * Validacion de permisos: Solo academicos y administradores pueden crear docentes (CU-02)
      * RNF-05: Control de acceso basado en roles
      */
     @PrePersist
     private void validarPermisoCrear() {
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para crear docentes. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para crear docentes. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
     }
 
     /**
-     * Validación de permisos: Solo administradores pueden modificar docentes (CU-05)
-     * Cumple RNF-05: Académicos pueden crear pero no modificar
+     * Validacion de permisos: Solo administradores pueden modificar docentes (CU-05)
+     * Cumple RNF-05: Academicos pueden crear pero no modificar
      */
     @PreUpdate
     private void validarPermisoModificar() {
@@ -90,7 +90,7 @@ public class Docente {
     }
 
     /**
-     * Validación de permisos: Solo admin y académicos pueden eliminar
+     * Validacion de permisos: Solo admin y academicos pueden eliminar
      */
     @PreRemove
     private void validarPermisoEliminar() {

@@ -15,10 +15,10 @@ import com.studio.stud_io2.util.SecurityHelper.Rol;
  * 
  * Pruebas de caja blanca aplicando:
  * - Cobertura de sentencia
- * - Cobertura de decisión
+ * - Cobertura de decision
  * - Cobertura de camino
  * 
- * Métodos bajo prueba:
+ * Metodos bajo prueba:
  * - getRol(String username)
  * - tienePermiso(String operacion, String modulo)
  * - getEmailDocenteFromUsername(String username)
@@ -27,7 +27,7 @@ import com.studio.stud_io2.util.SecurityHelper.Rol;
 class SecurityHelperTest {
 
     @Nested
-    @DisplayName("getRol(String username) - Tests de Decisión")
+    @DisplayName("getRol(String username) - Tests de Decision")
     class GetRolTests {
 
         @Test
@@ -38,7 +38,7 @@ class SecurityHelperTest {
         }
 
         @Test
-        @DisplayName("Camino 2: username vacío → USUARIO")
+        @DisplayName("Camino 2: username vacio → USUARIO")
         void testGetRol_EmptyUsername() {
             Rol resultado = SecurityHelper.getRol("");
             assertThat(resultado).isEqualTo(Rol.USUARIO);
@@ -101,7 +101,7 @@ class SecurityHelperTest {
         }
 
         @Test
-        @DisplayName("Camino 11: username genérico → USUARIO")
+        @DisplayName("Camino 11: username generico → USUARIO")
         void testGetRol_GenericUser() {
             Rol resultado = SecurityHelper.getRol("juan_perez");
             assertThat(resultado).isEqualTo(Rol.USUARIO);
@@ -116,37 +116,37 @@ class SecurityHelperTest {
                 "estudiante, USUARIO",
                 "invitado, USUARIO"
         })
-        @DisplayName("Prueba parametrizada: Múltiples usuarios")
+        @DisplayName("Prueba parametrizada: Multiples usuarios")
         void testGetRol_MultipleUsers(String username, Rol expectedRol) {
             Rol resultado = SecurityHelper.getRol(username);
             assertThat(resultado)
-                    .as("Usuario '%s' debería tener rol %s", username, expectedRol)
+                    .as("Usuario '%s' deberia tener rol %s", username, expectedRol)
                     .isEqualTo(expectedRol);
         }
     }
 
     @Nested
-    @DisplayName("tienePermiso(String operacion, String modulo) - Tests de Decisión Compleja")
+    @DisplayName("tienePermiso(String operacion, String modulo) - Tests de Decision Compleja")
     class TienePermisoTests {
 
         // ADMINISTRADOR - Acceso total
         @Test
-        @DisplayName("Admin: Tiene permiso total (CREATE en cualquier módulo)")
+        @DisplayName("Admin: Tiene permiso total (CREATE en cualquier modulo)")
         void testAdmin_CreatePermission() {
             // Simular rol ADMINISTRADOR
             boolean resultado = SecurityHelper.tienePermiso("CREATE", "Estudiante");
             // No podemos probar directamente sin mockear Users.getCurrent()
-            // Pero podemos probar la lógica interna
+            // Pero podemos probar la logica interna
         }
 
         // Dado que tienePermiso() depende de getRolActual() que requiere contexto web,
-        // demostraremos la cobertura con tests unitarios más simples
+        // demostraremos la cobertura con tests unitarios mas simples
 
         @Test
         @DisplayName("Verifica que esAdministrador() depende de getRolActual()")
         void testEsAdministrador_DependsOnGetRolActual() {
             // Este test documenta la dependencia de contexto web
-            // En un entorno real, requeriría mock de Users.getCurrent()
+            // En un entorno real, requeriria mock de Users.getCurrent()
             assertThat(SecurityHelper.class)
                     .hasDeclaredMethods("esAdministrador", "getRolActual");
         }
@@ -220,7 +220,7 @@ class SecurityHelperTest {
         }
 
         @Test
-        @DisplayName("Camino 8: docente_nuevo (dinámico) → nuevo@profesores.edu.ec")
+        @DisplayName("Camino 8: docente_nuevo (dinamico) → nuevo@profesores.edu.ec")
         void testGetEmail_DynamicGeneration() {
             String email = SecurityHelper.getEmailDocenteFromUsername("docente_nuevo");
             assertThat(email).isEqualTo("nuevo@profesores.edu.ec");
@@ -242,7 +242,7 @@ class SecurityHelperTest {
                 "docente_mendoza, andres.mendoza@profesores.edu.ec",
                 "docente_garcia, garcia@profesores.edu.ec"
         })
-        @DisplayName("Prueba parametrizada: Múltiples docentes")
+        @DisplayName("Prueba parametrizada: Multiples docentes")
         void testGetEmail_MultipleDocentes(String username, String expectedEmail) {
             String email = SecurityHelper.getEmailDocenteFromUsername(username);
             assertThat(email).isEqualTo(expectedEmail);
@@ -250,7 +250,7 @@ class SecurityHelperTest {
     }
 
     @Nested
-    @DisplayName("Tests de Borde y Valores Límite")
+    @DisplayName("Tests de Borde y Valores Limite")
     class EdgeCaseTests {
 
         @Test

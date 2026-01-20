@@ -15,21 +15,21 @@ import org.junit.jupiter.params.provider.CsvSource;
  * 
  * Pruebas de caja blanca aplicando:
  * - Cobertura de sentencia
- * - Cobertura de decisión
+ * - Cobertura de decision
  * - Cobertura de camino
  * 
- * Método bajo prueba:
+ * Metodo bajo prueba:
  * - determinarEstadoFinal(BigDecimal promedio)
  */
 @DisplayName("Calificacion - White Box Testing")
 class CalificacionTest {
 
     @Nested
-    @DisplayName("determinarEstadoFinal(BigDecimal promedio) - Tests de Decisión Binaria")
+    @DisplayName("determinarEstadoFinal(BigDecimal promedio) - Tests de Decision Binaria")
     class DeterminarEstadoFinalTests {
 
         @Test
-        @DisplayName("Camino 1: promedio = 70.00 (valor límite inferior APROBADO) → APROBADO")
+        @DisplayName("Camino 1: promedio = 70.00 (valor limite inferior APROBADO) → APROBADO")
         void testDeterminarEstado_ExactlySeventyAprobado() {
             BigDecimal promedio = new BigDecimal("70.00");
             String resultado = Calificacion.determinarEstadoFinal(promedio);
@@ -49,7 +49,7 @@ class CalificacionTest {
         }
 
         @Test
-        @DisplayName("Camino 1: promedio = 100.00 (máximo) → APROBADO")
+        @DisplayName("Camino 1: promedio = 100.00 (maximo) → APROBADO")
         void testDeterminarEstado_MaximumGradeAprobado() {
             BigDecimal promedio = new BigDecimal("100.00");
             String resultado = Calificacion.determinarEstadoFinal(promedio);
@@ -59,7 +59,7 @@ class CalificacionTest {
         }
 
         @Test
-        @DisplayName("Camino 1: promedio = 70.01 (justo encima del límite) → APROBADO")
+        @DisplayName("Camino 1: promedio = 70.01 (justo encima del limite) → APROBADO")
         void testDeterminarEstado_JustAboveLimitAprobado() {
             BigDecimal promedio = new BigDecimal("70.01");
             String resultado = Calificacion.determinarEstadoFinal(promedio);
@@ -69,7 +69,7 @@ class CalificacionTest {
         }
 
         @Test
-        @DisplayName("Camino 2: promedio = 69.99 (valor límite superior REPROBADO) → REPROBADO")
+        @DisplayName("Camino 2: promedio = 69.99 (valor limite superior REPROBADO) → REPROBADO")
         void testDeterminarEstado_JustBelowLimitReprobado() {
             BigDecimal promedio = new BigDecimal("69.99");
             String resultado = Calificacion.determinarEstadoFinal(promedio);
@@ -89,7 +89,7 @@ class CalificacionTest {
         }
 
         @Test
-        @DisplayName("Camino 2: promedio = 0.00 (mínimo) → REPROBADO")
+        @DisplayName("Camino 2: promedio = 0.00 (minimo) → REPROBADO")
         void testDeterminarEstado_ZeroGradeReprobado() {
             BigDecimal promedio = new BigDecimal("0.00");
             String resultado = Calificacion.determinarEstadoFinal(promedio);
@@ -128,7 +128,7 @@ class CalificacionTest {
                 "10.00, REPROBADO",
                 "0.00, REPROBADO"
         })
-        @DisplayName("Prueba parametrizada: Múltiples promedios")
+        @DisplayName("Prueba parametrizada: Multiples promedios")
         void testDeterminarEstado_MultipleGrades(BigDecimal promedio, String expectedEstado) {
             String resultado = Calificacion.determinarEstadoFinal(promedio);
             assertThat(resultado)
@@ -138,11 +138,11 @@ class CalificacionTest {
     }
 
     @Nested
-    @DisplayName("Tests de Borde y Valores Límite")
+    @DisplayName("Tests de Borde y Valores Limite")
     class EdgeCaseTests {
 
         @Test
-        @DisplayName("Promedio negativo (caso inválido pero funcional) → REPROBADO")
+        @DisplayName("Promedio negativo (caso invalido pero funcional) → REPROBADO")
         void testDeterminarEstado_NegativeGrade() {
             BigDecimal promedio = new BigDecimal("-10.00");
             String resultado = Calificacion.determinarEstadoFinal(promedio);
@@ -152,7 +152,7 @@ class CalificacionTest {
         }
 
         @Test
-        @DisplayName("Promedio muy alto (>100, caso inválido pero funcional) → APROBADO")
+        @DisplayName("Promedio muy alto (>100, caso invalido pero funcional) → APROBADO")
         void testDeterminarEstado_AboveMaximum() {
             BigDecimal promedio = new BigDecimal("150.00");
             String resultado = Calificacion.determinarEstadoFinal(promedio);
@@ -172,7 +172,7 @@ class CalificacionTest {
         }
 
         @Test
-        @DisplayName("Promedio exacto con precisión alta (70.000000000) → APROBADO")
+        @DisplayName("Promedio exacto con precision alta (70.000000000) → APROBADO")
         void testDeterminarEstado_HighPrecisionExactly70() {
             BigDecimal promedio = new BigDecimal("70.000000000");
             String resultado = Calificacion.determinarEstadoFinal(promedio);
@@ -232,9 +232,9 @@ class CalificacionTest {
         }
 
         @Test
-        @DisplayName("Resumen: 100% cobertura de decisión (TRUE y FALSE)")
+        @DisplayName("Resumen: 100% cobertura de decision (TRUE y FALSE)")
         void testCompleteCoverage() {
-            // Este test documenta que ambos caminos están cubiertos
+            // Este test documenta que ambos caminos estan cubiertos
             assertThat(Calificacion.determinarEstadoFinal(new BigDecimal("70.00")))
                     .as("Rama TRUE cubierta")
                     .isEqualTo("APROBADO");
@@ -251,8 +251,8 @@ class CalificacionTest {
      * - Datos de prueba en base de datos
      * - Contexto JPA configurado
      * 
-     * Por ser una prueba de integración más que unitaria, se excluye del scope
-     * de pruebas de caja blanca puras. En un entorno real, se probaría con:
+     * Por ser una prueba de integracion mas que unitaria, se excluye del scope
+     * de pruebas de caja blanca puras. En un entorno real, se probaria con:
      * - @ExtendWith(MockitoExtension.class)
      * - @Mock EntityManager em
      * - Stub de createQuery() y getResultList()

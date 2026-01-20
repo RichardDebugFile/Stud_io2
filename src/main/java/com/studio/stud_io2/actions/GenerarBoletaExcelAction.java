@@ -16,10 +16,10 @@ import org.openxava.actions.ViewBaseAction;
 import org.openxava.jpa.XPersistence;
 
 /**
- * Acción para generar boleta de calificaciones en formato Excel.
- * 
- * RF-10: Generación de reportes (Boleta de Calificaciones en Excel)
- * Requisito: El sistema debe permitir la generación de reportes académicos.
+ * Accion para generar boleta de calificaciones en formato Excel.
+ *
+ * RF-10: Generacion de reportes (Boleta de Calificaciones en Excel)
+ * Requisito: El sistema debe permitir la generacion de reportes academicos.
  * Cumplimiento: Genera boleta con promedio ponderado y estado final.
  */
 public class GenerarBoletaExcelAction extends ViewBaseAction {
@@ -57,7 +57,7 @@ public class GenerarBoletaExcelAction extends ViewBaseAction {
         f.setBold(true);
         bold.setFont(f);
 
-        // Estilo para números con 2 decimales
+        // Estilo para numeros con 2 decimales
         CellStyle numberStyle = wb.createCellStyle();
         org.apache.poi.ss.usermodel.DataFormat format = wb.createDataFormat();
         numberStyle.setDataFormat(format.getFormat("0.00"));
@@ -112,13 +112,13 @@ public class GenerarBoletaExcelAction extends ViewBaseAction {
         row.createCell(0).setCellValue("ESTADO:");
         row.createCell(1).setCellValue(estado);
 
-        // Ajustar ancho de columnas - usar ancho fijo para columnas numéricas
+        // Ajustar ancho de columnas - usar ancho fijo para columnas numericas
         sh.autoSizeColumn(0); // Columna de texto (Rubro, PROMEDIO, etc.)
         sh.setColumnWidth(0, sh.getColumnWidth(0) + 1024);
 
-        // Columnas numéricas: establecer ancho fijo suficiente para decimales
+        // Columnas numericas: establecer ancho fijo suficiente para decimales
         sh.setColumnWidth(1, 4000); // Nota: ~15 caracteres (suficiente para "100.00")
-        sh.setColumnWidth(2, 4000); // Ponderación: ~15 caracteres
+        sh.setColumnWidth(2, 4000); // Ponderacion: ~15 caracteres
 
         File tempDir = new File(System.getProperty("java.io.tmpdir"));
         File outFile = new File(tempDir, "boleta_" + nombre.replace(" ", "_") + ".xlsx");

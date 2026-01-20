@@ -39,8 +39,8 @@ public class Calificacion {
 
     @Column(precision = 5, scale = 2, nullable = false)
     @Required
-    @DecimalMin(value = "0.00", message = "La nota mínima es 0")
-    @DecimalMax(value = "100.00", message = "La nota máxima es 100")
+    @DecimalMin(value = "0.00", message = "La nota minima es 0")
+    @DecimalMax(value = "100.00", message = "La nota maxima es 100")
     private BigDecimal nota;
 
     @Column(name = "fecha_registro", nullable = false)
@@ -63,7 +63,7 @@ public class Calificacion {
         // Validacion 1: Coherencia matricula-rubro
         if (!matricula.getAsignacion().getId().equals(rubro.getAsignacion().getId())) {
             throw new javax.validation.ValidationException(
-                    "Error: El rubro no pertenece a la asignación de la matrícula seleccionada");
+                    "Error: El rubro no pertenece a la asignacion de la matricula seleccionada");
         }
 
         // Validacion 2: Ponderacion completa (solo en @PrePersist)
@@ -72,9 +72,9 @@ public class Calificacion {
 
         if (!completo) {
             throw new javax.validation.ValidationException(
-                    "No se puede registrar la calificación. " +
-                            "Las ponderaciones de los rubros de esta asignación no suman 100%. " +
-                            "Debe completar la configuración de evaluaciones primero.");
+                    "No se puede registrar la calificacion. " +
+                            "Las ponderaciones de los rubros de esta asignacion no suman 100%. " +
+                            "Debe completar la configuracion de evaluaciones primero.");
         }
     }
 
@@ -116,7 +116,7 @@ public class Calificacion {
             sumaPonderaciones = sumaPonderaciones.add(ponderacion);
         }
 
-        // Si no hay 100% de ponderación registrada, devolver promedio parcial
+        // Si no hay 100% de ponderacion registrada, devolver promedio parcial
         if (sumaPonderaciones.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
@@ -136,14 +136,14 @@ public class Calificacion {
     }
 
     /**
-     * Validación de permisos: Solo académicos y administradores pueden eliminar calificaciones (CU-08)
+     * Validacion de permisos: Solo academicos y administradores pueden eliminar calificaciones (CU-08)
      * Los docentes pueden crear y modificar, pero no eliminar
      */
     @PreRemove
     private void validarPermisoEliminar() {
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para eliminar calificaciones. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para eliminar calificaciones. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
     }
 }

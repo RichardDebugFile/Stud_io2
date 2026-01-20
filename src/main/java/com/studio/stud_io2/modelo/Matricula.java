@@ -46,7 +46,7 @@ public class Matricula {
 
     /**
      * Campo calculado: Promedio ponderado de calificaciones (CU-08-TC-02)
-     * Se calcula dinámicamente usando Calificacion.calcularPromedioPonderado()
+     * Se calcula dinamicamente usando Calificacion.calcularPromedioPonderado()
      */
     @Transient
     @ReadOnly
@@ -94,19 +94,19 @@ public class Matricula {
      */
     @PrePersist
     private void validarCuposYPermisos() {
-        // Validación de permisos: Solo académicos y administradores pueden crear matrículas
+        // Validacion de permisos: Solo academicos y administradores pueden crear matriculas
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para crear matrículas. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para crear matriculas. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
 
         if (asignacion == null) {
-            return; // La validación @Required se encargará
+            return; // La validacion @Required se encargara
         }
 
         EntityManager em = org.openxava.jpa.XPersistence.getManager();
 
-        // Contar matrículas activas en esta asignación
+        // Contar matriculas activas en esta asignacion
         String jpql = "SELECT COUNT(m) FROM Matricula m " +
                 "WHERE m.asignacion.id = :asignacionId " +
                 "AND m.estado = 'ACTIVA'";
@@ -117,8 +117,8 @@ public class Matricula {
 
         if (count >= asignacion.getCupoMaximo()) {
             throw new javax.validation.ValidationException(
-                    String.format("No hay cupos disponibles en la sección %s del curso %s. " +
-                            "Cupo máximo: %d, Matriculados: %d",
+                    String.format("No hay cupos disponibles en la seccion %s del curso %s. " +
+                            "Cupo maximo: %d, Matriculados: %d",
                             asignacion.getSeccion(),
                             asignacion.getCurso().getNombre(),
                             asignacion.getCupoMaximo(),
@@ -127,24 +127,24 @@ public class Matricula {
     }
 
     /**
-     * Validación de permisos: Solo académicos y administradores pueden modificar matrículas
+     * Validacion de permisos: Solo academicos y administradores pueden modificar matriculas
      */
     @PreUpdate
     private void validarPermisoModificar() {
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para modificar matrículas. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para modificar matriculas. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
     }
 
     /**
-     * Validación de permisos: Solo académicos y administradores pueden eliminar matrículas
+     * Validacion de permisos: Solo academicos y administradores pueden eliminar matriculas
      */
     @PreRemove
     private void validarPermisoEliminar() {
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para eliminar matrículas. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para eliminar matriculas. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
     }
 }

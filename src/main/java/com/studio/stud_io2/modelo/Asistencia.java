@@ -22,7 +22,7 @@ public class Asistencia {
 
     /**
      * Enum para los estados de asistencia
-     * Garantiza que solo se usen valores válidos en el sistema
+     * Garantiza que solo se usen valores validos en el sistema
      */
     public enum EstadoAsistencia {
         PRESENTE,
@@ -87,16 +87,16 @@ public class Asistencia {
     }
 
     /**
-     * Validación de fecha dentro del rango del periodo (CU-09-TC-06)
+     * Validacion de fecha dentro del rango del periodo (CU-09-TC-06)
      */
     @PrePersist
     @PreUpdate
     private void validarFechaEnRangoPeriodo() {
         if (matricula == null || fecha == null) {
-            return; // @Required se encargará de esto
+            return; // @Required se encargara de esto
         }
 
-        // Obtener el periodo a través de la asignación
+        // Obtener el periodo a traves de la asignacion
         if (matricula.getAsignacion() != null && matricula.getAsignacion().getPeriodo() != null) {
             java.time.LocalDate fechaInicio = matricula.getAsignacion().getPeriodo().getFechaInicio();
             java.time.LocalDate fechaFin = matricula.getAsignacion().getPeriodo().getFechaFin();
@@ -114,14 +114,14 @@ public class Asistencia {
     }
 
     /**
-     * Validación de permisos: Solo académicos y administradores pueden eliminar registros de asistencia (CU-09)
+     * Validacion de permisos: Solo academicos y administradores pueden eliminar registros de asistencia (CU-09)
      * Los docentes pueden crear y modificar, pero no eliminar
      */
     @PreRemove
     private void validarPermisoEliminar() {
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para eliminar registros de asistencia. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para eliminar registros de asistencia. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
     }
 }

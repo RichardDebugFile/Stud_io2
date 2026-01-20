@@ -6,8 +6,8 @@ import org.openxava.annotations.*;
 import lombok.*;
 
 /**
- * Entidad Curso - Representa una materia del catálogo académico
- * RF-04: Catálogo de materias y créditos
+ * Entidad Curso - Representa una materia del catalogo academico
+ * RF-04: Catalogo de materias y creditos
  */
 @Entity
 @Getter
@@ -33,8 +33,8 @@ public class Curso {
     private String nombre;
 
     @Column(nullable = false)
-    @Min(value = 1, message = "Los créditos deben ser al menos 1")
-    @Max(value = 10, message = "Los créditos no pueden exceder 10")
+    @Min(value = 1, message = "Los creditos deben ser al menos 1")
+    @Max(value = 10, message = "Los creditos no pueden exceder 10")
     @Required
     private Integer creditos;
 
@@ -48,35 +48,35 @@ public class Curso {
     private String descripcion;
 
     /**
-     * Validación de permisos: Solo académicos y administradores pueden crear cursos (CU-04)
+     * Validacion de permisos: Solo academicos y administradores pueden crear cursos (CU-04)
      */
     @PrePersist
     private void validarPermisoCrear() {
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para crear cursos. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para crear cursos. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
     }
 
     /**
-     * Validación de permisos: Solo académicos y administradores pueden modificar cursos (CU-04)
+     * Validacion de permisos: Solo academicos y administradores pueden modificar cursos (CU-04)
      */
     @PreUpdate
     private void validarPermisoModificar() {
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para modificar cursos. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para modificar cursos. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
     }
 
     /**
-     * Validación de permisos: Solo académicos y administradores pueden eliminar cursos (CU-04)
+     * Validacion de permisos: Solo academicos y administradores pueden eliminar cursos (CU-04)
      */
     @PreRemove
     private void validarPermisoEliminar() {
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para eliminar cursos. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para eliminar cursos. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
     }
 }

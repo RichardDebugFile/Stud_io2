@@ -6,9 +6,9 @@ import org.openxava.annotations.*;
 import lombok.*;
 
 /**
- * Entidad Periodo - Representa un periodo lectivo/académico
+ * Entidad Periodo - Representa un periodo lectivo/academico
  * RF-03: Fecha Inicio debe ser anterior a Fecha Fin
- * RF-03: Solo puede existir un periodo activo simultáneamente
+ * RF-03: Solo puede existir un periodo activo simultaneamente
  */
 @Entity
 @Getter
@@ -40,33 +40,33 @@ public class Periodo {
     private boolean activo = false;
 
     /**
-     * Validación: Fecha Inicio debe ser anterior a Fecha Fin (RF-03)
+     * Validacion: Fecha Inicio debe ser anterior a Fecha Fin (RF-03)
      */
     @AssertTrue(message = "La fecha de inicio debe ser anterior a la fecha de fin")
     public boolean isFechasValidas() {
         if (fechaInicio == null || fechaFin == null) {
-            return true; // La validación @Required se encargará
+            return true; // La validacion @Required se encargara
         }
         return fechaInicio.isBefore(fechaFin);
     }
 
     /**
-     * Validación de permisos antes de cualquier operación (CU-03)
+     * Validacion de permisos antes de cualquier operacion (CU-03)
      */
     @PrePersist
     @PreUpdate
     private void validarPermisos() {
-        // Validación de permisos PRIMERO (rápido, sin queries)
+        // Validacion de permisos PRIMERO (rapido, sin queries)
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para gestionar períodos académicos. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para gestionar periodos academicos. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
 
-        // Validación de período activo único (RF-03)
+        // Validacion de periodo activo unico (RF-03)
         if (this.activo) {
             EntityManager em = org.openxava.jpa.XPersistence.getManager();
 
-            // Deshabilitar auto-flush temporalmente para evitar recursión infinita
+            // Deshabilitar auto-flush temporalmente para evitar recursion infinita
             javax.persistence.FlushModeType flushModeOriginal = em.getFlushMode();
             em.setFlushMode(javax.persistence.FlushModeType.COMMIT);
 
@@ -76,10 +76,10 @@ public class Periodo {
 
                 javax.persistence.Query query;
                 if (this.id == null) {
-                    // Nuevo registro - buscar cualquier período activo
+                    // Nuevo registro - buscar cualquier periodo activo
                     query = em.createNativeQuery(sql);
                 } else {
-                    // Actualización - excluir el período actual
+                    // Actualizacion - excluir el periodo actual
                     sql += " AND id != ?";
                     query = em.createNativeQuery(sql);
                     query.setParameter(1, this.id);
@@ -99,13 +99,13 @@ public class Periodo {
     }
 
     /**
-     * Validación de permisos: Solo académicos y administradores pueden eliminar períodos (CU-03)
+     * Validacion de permisos: Solo academicos y administradores pueden eliminar periodos (CU-03)
      */
     @PreRemove
     private void validarPermisoEliminar() {
         if (!com.studio.stud_io2.util.SecurityHelper.esAcademicoOSuperior()) {
             throw new javax.validation.ValidationException(
-                    "No tiene permisos para eliminar períodos. Solo Académicos y Administradores pueden realizar esta operación.");
+                    "No tiene permisos para eliminar periodos. Solo Academicos y Administradores pueden realizar esta operacion.");
         }
     }
 }

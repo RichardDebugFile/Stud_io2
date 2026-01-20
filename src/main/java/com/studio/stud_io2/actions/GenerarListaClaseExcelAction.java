@@ -9,11 +9,11 @@ import org.openxava.actions.*;
 import org.openxava.jpa.*;
 
 /**
- * Acci�n para generar lista de clase en formato Excel.
- * 
- * RF-10: Generaci�n de reportes (Lista de Clase en Excel)
- * Requisito: El sistema debe permitir la generaci�n de reportes académicos.
- * Cumplimiento: Genera lista de estudiantes matriculados por secci�n.
+ * Accion para generar lista de clase en formato Excel.
+ *
+ * RF-10: Generacion de reportes (Lista de Clase en Excel)
+ * Requisito: El sistema debe permitir la generacion de reportes academicos.
+ * Cumplimiento: Genera lista de estudiantes matriculados por seccion.
  */
 public class GenerarListaClaseExcelAction extends ViewBaseAction {
 
@@ -48,7 +48,7 @@ public class GenerarListaClaseExcelAction extends ViewBaseAction {
         f.setBold(true);
         bold.setFont(f);
 
-        // Estilo para números enteros
+        // Estilo para numeros enteros
         CellStyle numberStyle = wb.createCellStyle();
         DataFormat format = wb.createDataFormat();
         numberStyle.setDataFormat(format.getFormat("0"));
@@ -104,8 +104,8 @@ public class GenerarListaClaseExcelAction extends ViewBaseAction {
         }
 
         // Ajustar ancho de columnas
-        sh.setColumnWidth(0, 2000); // No.: ancho fijo pequeño
-        sh.autoSizeColumn(1); // Cédula
+        sh.setColumnWidth(0, 2000); // No.: ancho fijo pequeno
+        sh.autoSizeColumn(1); // Cedula
         sh.setColumnWidth(1, sh.getColumnWidth(1) + 1024);
         sh.autoSizeColumn(2); // Nombre
         sh.setColumnWidth(2, sh.getColumnWidth(2) + 1024);
